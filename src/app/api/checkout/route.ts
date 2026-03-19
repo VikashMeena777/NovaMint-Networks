@@ -48,17 +48,34 @@ export async function POST(request: Request) {
             );
         }
 
-        // Create order items
+        // Resolve cart item slugs to real product UUIDs
+        const itemSlugs = items.map((item: any) => item.id).filter(Boolean);
+        const { data: dbProducts } = await adminClient
+            .from('products')
+            .select('id, slug')
+            .in('slug', itemSlugs);
+
+        const slugToUuid = new Map(
+            dbProducts?.map((p: any) => [p.slug, p.id]) || []
+        );
+
         const orderItems = items.map((item: any) => ({
             order_id: order.id,
-            product_id: item.id || null,
+            product_id: slugToUuid.get(item.id) || null,
             product_name: item.name,
             price: item.price,
             quantity: item.quantity,
             type: item.type,
         }));
 
-        await adminClient.from('order_items').insert(orderItems);
+        const { error: itemsError } = await adminClient
+            .from('order_items')
+            .insert(orderItems);
+
+        if (itemsError) {
+            console.error('Order items insert error:', itemsError);
+            // Don't fail the checkout — order is already created; items are logged
+        }
 
         // Create Cashfree order
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

@@ -34,28 +34,28 @@ const categories = [
 
 // Reels Bundle Categories (47 items)
 const reelsBundles = [
-    { id: 1, name: 'Fitness & Gym', description: 'Workout motivation, gym tips, and fitness journey reels', count: '50+' },
-    { id: 2, name: 'Motivational', description: 'Inspiring quotes, success stories, and mindset content', count: '50+', popular: true },
-    { id: 3, name: 'Luxury Lifestyle', description: 'Premium lifestyle, cars, travel, and success aesthetic', count: '50+', bestseller: true },
-    { id: 4, name: 'Nature & Travel', description: 'Stunning landscapes, travel destinations, and nature beauty', count: '50+' },
-    { id: 5, name: 'Sanatan Dharm', description: 'Spiritual content, mantras, temple visuals, and dharmic wisdom', count: '50+', popular: true },
-    { id: 6, name: 'Tech & Gadgets', description: 'Latest gadgets, tech reviews, and futuristic content', count: '50+' },
-    { id: 7, name: 'Food & Cooking', description: 'Recipes, food photography, and cooking tutorials', count: '50+' },
-    { id: 8, name: 'Fashion & Style', description: 'Outfit ideas, fashion trends, and styling tips', count: '50+' },
-    { id: 9, name: 'Business & Finance', description: 'Money tips, investing, and entrepreneurship', count: '50+' },
-    { id: 10, name: 'Gaming', description: 'Gaming clips, highlights, and gaming culture', count: '50+' },
-    { id: 11, name: 'Cars & Automobiles', description: 'Supercars, car reviews, and automotive content', count: '50+', bestseller: true },
-    { id: 12, name: 'Comedy & Entertainment', description: 'Funny clips, memes, and entertainment content', count: '50+' },
+    { id: 1, slug: 'fitness-gym-reels', name: 'Fitness & Gym', description: 'Workout motivation, gym tips, and fitness journey reels', count: '50+', price: 99 },
+    { id: 2, slug: 'motivational-reels', name: 'Motivational', description: 'Inspiring quotes, success stories, and mindset content', count: '50+', popular: true, price: 99 },
+    { id: 3, slug: 'luxury-lifestyle-reels', name: 'Luxury Lifestyle', description: 'Premium lifestyle, cars, travel, and success aesthetic', count: '50+', bestseller: true, price: 99 },
+    { id: 4, slug: 'nature-travel-reels', name: 'Nature & Travel', description: 'Stunning landscapes, travel destinations, and nature beauty', count: '50+', price: 99 },
+    { id: 5, slug: 'sanatan-dharm-reels', name: 'Sanatan Dharm', description: 'Spiritual content, mantras, temple visuals, and dharmic wisdom', count: '50+', popular: true, price: 99 },
+    { id: 6, slug: 'tech-gadgets-reels', name: 'Tech & Gadgets', description: 'Latest gadgets, tech reviews, and futuristic content', count: '50+', price: 99 },
+    { id: 7, slug: 'food-cooking-reels', name: 'Food & Cooking', description: 'Recipes, food photography, and cooking tutorials', count: '50+', price: 99 },
+    { id: 8, slug: 'fashion-style-reels', name: 'Fashion & Style', description: 'Outfit ideas, fashion trends, and styling tips', count: '50+', price: 99 },
+    { id: 9, slug: 'business-finance-reels', name: 'Business & Finance', description: 'Money tips, investing, and entrepreneurship', count: '50+', price: 99 },
+    { id: 10, slug: 'gaming-reels', name: 'Gaming', description: 'Gaming clips, highlights, and gaming culture', count: '50+', price: 99 },
+    { id: 11, slug: 'cars-automobiles-reels', name: 'Cars & Automobiles', description: 'Supercars, car reviews, and automotive content', count: '50+', bestseller: true, price: 99 },
+    { id: 12, slug: 'comedy-entertainment-reels', name: 'Comedy & Entertainment', description: 'Funny clips, memes, and entertainment content', count: '50+', price: 99 },
 ];
 
 // Mega Bundles (24 items)
 const megaBundles = [
-    { id: 1, name: 'Ultimate Motivation Pack', pieces: '5,000+', description: 'Massive collection of motivational quotes, success stories, and mindset content', price: 149, popular: true },
-    { id: 2, name: 'Luxury Empire Bundle', pieces: '3,000+', description: 'Cars, jets, mansions, watches, and ultimate luxury lifestyle content', price: 149, bestseller: true },
-    { id: 3, name: 'Fitness Mega Collection', pieces: '2,500+', description: 'Complete gym and fitness content library for fitness pages', price: 149 },
-    { id: 4, name: 'Spiritual Wisdom Pack', pieces: '4,000+', description: 'Comprehensive Sanatan Dharm, meditation, and spiritual content', price: 149, popular: true },
-    { id: 5, name: 'Complete Nature Bundle', pieces: '2,000+', description: 'Mountains, oceans, forests, and stunning natural landscapes', price: 149 },
-    { id: 6, name: 'Business Mastery Pack', pieces: '3,500+', description: 'Entrepreneurship, money mindset, and business content', price: 149 },
+    { id: 1, slug: 'ultimate-motivation-pack', name: 'Ultimate Motivation Pack', pieces: '5,000+', description: 'Massive collection of motivational quotes, success stories, and mindset content', price: 149, popular: true },
+    { id: 2, slug: 'luxury-empire-bundle', name: 'Luxury Empire Bundle', pieces: '3,000+', description: 'Cars, jets, mansions, watches, and ultimate luxury lifestyle content', price: 149, bestseller: true },
+    { id: 3, slug: 'fitness-mega-collection', name: 'Fitness Mega Collection', pieces: '2,500+', description: 'Complete gym and fitness content library for fitness pages', price: 149 },
+    { id: 4, slug: 'spiritual-wisdom-pack', name: 'Spiritual Wisdom Pack', pieces: '4,000+', description: 'Comprehensive Sanatan Dharm, meditation, and spiritual content', price: 149, popular: true },
+    { id: 5, slug: 'complete-nature-bundle', name: 'Complete Nature Bundle', pieces: '2,000+', description: 'Mountains, oceans, forests, and stunning natural landscapes', price: 149 },
+    { id: 6, slug: 'business-mastery-pack', name: 'Business Mastery Pack', pieces: '3,500+', description: 'Entrepreneurship, money mindset, and business content', price: 149 },
 ];
 
 // Courses
@@ -72,9 +72,9 @@ export default function ProductsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const { addItem } = useCart();
 
-    const handleAddToCart = (product: { id: number | string; name: string; price: number }) => {
+    const handleAddToCart = (product: { slug: string; name: string; price: number }) => {
         addItem({
-            id: `product-${product.id}`,
+            id: product.slug,
             name: product.name,
             price: product.price,
             type: 'one-time'
@@ -209,11 +209,11 @@ export default function ProductsPage() {
                                             <div className="flex items-center justify-between gap-2">
                                                 <span className="text-nova-purple font-semibold">{bundle.count} reels</span>
                                                 <div className="flex gap-2">
-                                                    <Button size="sm" variant="outline" className="gap-1" onClick={() => handleAddToCart({ id: `reels-${bundle.id}`, name: bundle.name, price: 99 })}>
+                                                    <Button size="sm" variant="outline" className="gap-1" onClick={() => handleAddToCart({ slug: bundle.slug, name: bundle.name, price: bundle.price })}>
                                                         <ShoppingCart className="w-4 h-4" />
                                                         Add
                                                     </Button>
-                                                    <Button size="sm" onClick={() => handleAddToCart({ id: `reels-${bundle.id}`, name: bundle.name, price: 99 })}>Buy</Button>
+                                                    <Button size="sm" onClick={() => handleAddToCart({ slug: bundle.slug, name: bundle.name, price: bundle.price })}>Buy</Button>
                                                 </div>
                                             </div>
                                         </motion.div>
