@@ -49,24 +49,21 @@ export default function CheckoutStatusPage() {
                 if (attempts < maxAttempts) {
                     setTimeout(poll, interval);
                 } else {
-                    // Supabase still shows pending — check Cashfree directly
+                    // Supabase still shows pending — call verify endpoint to sync from Cashfree
                     try {
-                        const res = await fetch(`/api/orders/status?order_id=${orderId}`);
+                        const res = await fetch('/api/orders/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id: orderId }),
+                        });
                         if (res.ok) {
-                            const { payments } = await res.json();
-                            if (payments && payments.length > 0) {
-                                const latest = payments[0];
-                                const cfStatus =
-                                    latest.payment_status === 'SUCCESS' ? 'paid' :
-                                    latest.payment_status === 'FAILED' ? 'failed' :
-                                    'pending';
-                                if (cfStatus !== 'pending' && data) {
-                                    setOrder({ ...data, status: cfStatus });
-                                }
+                            const result = await res.json();
+                            if (result.order) {
+                                setOrder(result.order);
                             }
                         }
                     } catch {
-                        // Cashfree check failed — keep existing status
+                        // Verify check failed — keep existing status
                     }
                     setLoading(false);
                 }

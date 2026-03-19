@@ -230,7 +230,7 @@ h1, h2, h3, h4, h5, h6 {
    Glassmorphism
    ============================================= */
 .glass {
-  background: hsla(240, 12%, 7%, 0.65);
+  background: hsla(240, 12%, 7%, 0.95);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid hsla(240, 8%, 28%, 0.35);
