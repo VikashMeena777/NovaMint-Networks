@@ -4,14 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    Mail,
-    Phone,
-    MessageCircle,
-    MapPin,
     Send,
     Clock,
     CheckCircle2,
     ArrowRight,
+    MapPin,
     Instagram,
     Youtube,
     Twitter,
@@ -20,67 +17,17 @@ import {
 import { ScrollReveal, SlideUp } from '@/components/animations';
 import { Button, Card, Badge, SectionHeading, Input, Textarea } from '@/components/ui';
 import { siteConfig } from '@/lib/config';
+import { contactMethods, serviceTypes } from '@/data/contact';
+import { contactFaqs as faqs } from '@/data/faq';
+import { getIcon } from '@/lib/icon-map';
 
-// Contact Methods
-const contactMethods = [
-    {
-        icon: MessageCircle,
-        title: 'WhatsApp',
-        description: 'Quick responses, usually within minutes',
-        value: siteConfig.whatsapp,
-        action: `https://wa.me/${siteConfig.whatsapp.replace(/[^0-9]/g, '')}`,
-        actionLabel: 'Chat Now',
-        color: 'bg-green-500/20 text-green-500',
-    },
-    {
-        icon: Mail,
-        title: 'Email',
-        description: 'For detailed inquiries and proposals',
-        value: siteConfig.email,
-        action: `mailto:${siteConfig.email}`,
-        actionLabel: 'Send Email',
-        color: 'bg-nova-purple/20 text-nova-purple',
-    },
-    {
-        icon: Phone,
-        title: 'Phone',
-        description: 'Available during business hours',
-        value: siteConfig.phone,
-        action: `tel:${siteConfig.phone}`,
-        actionLabel: 'Call Now',
-        color: 'bg-electric-blue/20 text-electric-blue',
-    },
-];
-
-// FAQ Items
-const faqs = [
-    {
-        question: 'How long does it take to complete a project?',
-        answer: 'Turnaround time varies by project. Simple edits take 1-2 days, while complex automation setups can take 3-7 days.',
-    },
-    {
-        question: 'Do you offer refunds?',
-        answer: 'Due to the digital nature of our products, we don\'t offer refunds. However, we provide unlimited revisions until you\'re satisfied.',
-    },
-    {
-        question: 'Can I request custom work?',
-        answer: 'Absolutely! We love custom projects. Contact us with your requirements and we\'ll provide a tailored quote.',
-    },
-    {
-        question: 'What payment methods do you accept?',
-        answer: 'We accept all major payment methods including UPI, credit/debit cards, net banking, and wallets via Cashfree.',
-    },
-];
-
-// Service Types
-const serviceTypes = [
-    'Video Editing',
-    'Social Media Management',
-    'AI Automation',
-    'Graphic Design',
-    'Content Creation',
-    'Other',
-];
+/** Derive display value & action URL from a configKey. */
+function resolveContact(key: 'whatsapp' | 'email' | 'phone') {
+    const val = siteConfig[key];
+    if (key === 'whatsapp') return { value: val, action: `https://wa.me/${val.replace(/[^0-9]/g, '')}` };
+    if (key === 'email') return { value: val, action: `mailto:${val}` };
+    return { value: val, action: `tel:${val}` };
+}
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -155,16 +102,19 @@ export default function ContactPage() {
             <section className="py-12">
                 <div className="container">
                     <div className="grid md:grid-cols-3 gap-6">
-                        {contactMethods.map((method, index) => (
+                        {contactMethods.map((method, index) => {
+                            const Icon = getIcon(method.icon);
+                            const { value, action } = resolveContact(method.configKey);
+                            return (
                             <ScrollReveal key={method.title} delay={index * 0.1}>
                                 <Card className="text-center h-full">
                                     <div className={`w-14 h-14 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4`}>
-                                        <method.icon className="w-7 h-7" />
+                                        <Icon className="w-7 h-7" />
                                     </div>
                                     <h3 className="text-xl font-semibold mb-2">{method.title}</h3>
                                     <p className="text-muted-foreground text-base mb-2">{method.description}</p>
-                                    <p className="font-medium mb-4">{method.value}</p>
-                                    <a href={method.action} target="_blank" rel="noopener noreferrer">
+                                    <p className="font-medium mb-4">{value}</p>
+                                    <a href={action} target="_blank" rel="noopener noreferrer">
                                         <Button variant="secondary" className="w-full">
                                             {method.actionLabel}
                                             <ArrowRight className="w-4 h-4" />
@@ -172,7 +122,7 @@ export default function ContactPage() {
                                     </a>
                                 </Card>
                             </ScrollReveal>
-                        ))}
+                        ); })}
                     </div>
                 </div>
             </section>

@@ -7,21 +7,21 @@ import {
   ArrowRight,
   Play,
   Sparkles,
-  Shield,
-  Clock,
-  Award,
-  Users,
-  TrendingUp,
   Star,
   CheckCircle2,
-  Video,
-  Bot,
-  Briefcase,
-  Zap,
-  Globe,
   ChevronRight,
 } from 'lucide-react';
 import { Button, Badge } from '@/components/ui';
+import { getIcon } from '@/lib/icon-map';
+import {
+  heroStats,
+  trustedPlatforms,
+  impactStats,
+  homeServices,
+  whyUsFeatures,
+  whyUsBenefits,
+} from '@/data/homepage';
+import { testimonials } from '@/data/testimonials';
 
 // Animated Counter
 function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -144,12 +144,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.45 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto"
             >
-              {[
-                { value: 50, suffix: '+', label: 'Digital Products' },
-                { value: 17, suffix: '', label: 'Services' },
-                { value: 100, suffix: '+', label: 'Happy Clients' },
-                { value: 500, suffix: '+', label: 'Content Pieces' },
-              ].map((stat, i) => (
+              {heroStats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -198,7 +193,7 @@ export default function HomePage() {
             Trusted by creators and brands across India
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-40">
-            {['YouTube', 'Instagram', 'TikTok', 'Snapchat', 'LinkedIn', 'Twitter/X', 'Facebook'].map((name) => (
+            {trustedPlatforms.map((name) => (
               <span key={name} className="text-sm font-semibold text-foreground">{name}</span>
             ))}
           </div>
@@ -233,12 +228,7 @@ function StatsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
-  const stats = [
-    { icon: Briefcase, value: 50, suffix: '+', label: 'Projects Completed', description: 'Successful deliveries', color: 'from-nova-purple to-electric-blue' },
-    { icon: Users, value: 100, suffix: '+', label: 'Happy Clients', description: 'Creators served globally', color: 'from-electric-blue to-cyan' },
-    { icon: Clock, value: 1000, suffix: '+', label: 'Hours Saved', description: 'Through automation', color: 'from-cyan to-mint-green' },
-    { icon: Award, value: 99, suffix: '%', label: 'Satisfaction Rate', description: 'Client happiness', color: 'from-hot-pink to-gold' },
-  ];
+  const stats = impactStats;
 
   return (
     <section ref={ref} className="relative py-16 md:py-24 overflow-hidden">
@@ -276,7 +266,7 @@ function StatsSection() {
               className="card-pro p-5 md:p-7 text-center group hover:scale-[1.02]"
             >
               <div className={`w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                <stat.icon className="w-6 h-6 text-white" />
+                {(() => { const Icon = getIcon(stat.icon); return <Icon className="w-6 h-6 text-white" />; })()}
               </div>
               <div className="text-3xl md:text-4xl xl:text-5xl font-bold gradient-text">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
@@ -296,44 +286,7 @@ function ServicesSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
-  const services = [
-    {
-      icon: Video,
-      title: 'Video Editing',
-      description: 'Professional video editing for reels, shorts, and long-form content with cinematic effects.',
-      price: '₹599+',
-      href: '/services',
-      gradient: 'from-nova-purple to-electric-blue',
-      tag: 'Most Popular',
-    },
-    {
-      icon: Bot,
-      title: 'AI Automation',
-      description: 'Custom AI automation systems to streamline your entire content creation workflow effortlessly.',
-      price: '₹1,999+',
-      href: '/ai-automations',
-      gradient: 'from-electric-blue to-cyan',
-      tag: 'Trending',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Social Media',
-      description: 'Full-service social media management to grow your audience organically and drive engagement.',
-      price: '₹4,999/mo',
-      href: '/services',
-      gradient: 'from-hot-pink to-gold',
-      tag: 'Premium',
-    },
-    {
-      icon: Globe,
-      title: 'Website Building',
-      description: 'Modern, fast, and conversion-optimized websites built with the latest technologies.',
-      price: '₹9,999+',
-      href: '/services',
-      gradient: 'from-mint-green to-electric-blue',
-      tag: 'New',
-    },
-  ];
+  const services = homeServices;
 
   return (
     <section ref={ref} className="py-16 md:py-28">
@@ -373,7 +326,7 @@ function ServicesSection() {
 
                   <div className="relative flex items-start gap-5">
                     <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <service.icon className="w-6 h-6 text-white" />
+                      {(() => { const Icon = getIcon(service.icon); return <Icon className="w-6 h-6 text-white" />; })()}
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -428,19 +381,8 @@ function WhyUsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
-  const features = [
-    { icon: Shield, title: 'Secure', desc: 'Your data & assets are always protected', gradient: 'from-nova-purple to-electric-blue' },
-    { icon: Zap, title: 'Fast', desc: '24–48 hour delivery guaranteed', gradient: 'from-electric-blue to-cyan' },
-    { icon: Award, title: 'Quality', desc: 'Premium work, unlimited revisions', gradient: 'from-cyan to-mint-green' },
-    { icon: Users, title: 'Support', desc: '7-day week availability for you', gradient: 'from-hot-pink to-gold' },
-  ];
-
-  const benefits = [
-    'Trusted by 100+ creators, agencies, and brands',
-    'Average 300% engagement increase for clients',
-    'Expert team with proven results and experience',
-    'Dedicated support available 7 days a week',
-  ];
+  const features = whyUsFeatures;
+  const benefits = whyUsBenefits;
 
   return (
     <section ref={ref} className="relative py-16 md:py-28 overflow-hidden">
@@ -512,7 +454,7 @@ function WhyUsSection() {
                 className="card-pro p-6 md:p-7 text-center rounded-2xl cursor-default"
               >
                 <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                  <item.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  {(() => { const Icon = getIcon(item.icon); return <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />; })()}
                 </div>
                 <h4 className="font-bold text-base md:text-lg mb-1">{item.title}</h4>
                 <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">{item.desc}</p>
@@ -530,29 +472,7 @@ function TestimonialSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
-  const testimonials = [
-    {
-      quote: 'NovaMint completely transformed how we create content. Our engagement went up 300% and we\'re now reaching more people than ever before.',
-      name: 'Rahul Kumar',
-      title: 'Content Creator • 50K+ Followers',
-      initials: 'RK',
-      rating: 5,
-    },
-    {
-      quote: 'The AI automation setup saved me 20+ hours every single week. I can now focus on creating while NovaMint handles everything else.',
-      name: 'Priya Sharma',
-      title: 'Instagram Influencer • 80K Followers',
-      initials: 'PS',
-      rating: 5,
-    },
-    {
-      quote: 'Best investment I made for my YouTube channel. The video editing quality is outstanding and delivery is always on time.',
-      name: 'Arjun Singh',
-      title: 'YouTube Creator • 120K Subscribers',
-      initials: 'AS',
-      rating: 5,
-    },
-  ];
+  const homeTestimonials = testimonials.filter((t) => t.featured || t.id <= 3).slice(0, 3);
 
   return (
     <section ref={ref} className="py-16 md:py-28">
@@ -578,7 +498,9 @@ function TestimonialSection() {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-10 md:mb-12">
-          {testimonials.map((t, index) => (
+          {homeTestimonials.map((t, index) => {
+            const initials = t.name.split(' ').map((w) => w[0]).join('');
+            return (
             <motion.div
               key={t.name}
               initial={{ opacity: 0, y: 30 }}
@@ -592,19 +514,20 @@ function TestimonialSection() {
                 ))}
               </div>
               <blockquote className="text-sm md:text-base text-foreground/85 leading-relaxed mb-5 flex-1">
-                &quot;{t.quote}&quot;
+                &quot;{t.content}&quot;
               </blockquote>
               <div className="flex items-center gap-3 pt-4 border-t border-border/40">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-nova-purple to-electric-blue flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  {t.initials}
+                  {initials}
                 </div>
                 <div>
                   <div className="font-semibold text-sm">{t.name}</div>
-                  <div className="text-muted-foreground text-xs">{t.title}</div>
+                  <div className="text-muted-foreground text-xs">{t.role} • {t.company}</div>
                 </div>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         <motion.div

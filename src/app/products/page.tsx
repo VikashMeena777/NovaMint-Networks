@@ -23,48 +23,14 @@ import {
 import { ScrollReveal, SlideUp } from '@/components/animations';
 import { Button, Badge } from '@/components/ui';
 import { useCart } from '@/context/CartContext';
+import { reelsBundles, megaBundles, courses } from '@/data/products';
 
 // Product Categories
 const categories = [
     { id: 'all', name: 'All Products', icon: Package },
-    { id: 'reels', name: 'Reels Bundles', icon: Sparkles, count: 12 },
-    { id: 'mega', name: 'Mega Bundles', icon: Crown, count: 24 },
-    { id: 'courses', name: 'Courses', icon: BookOpen, count: 5 },
-];
-
-// Reels Bundle Categories (12 items)
-const reelsBundles = [
-    { id: 1, slug: 'fitness-gym-reels', name: 'Fitness & Gym', description: 'Workout motivation, gym tips, and fitness journey reels', count: '50+', price: 99 },
-    { id: 2, slug: 'motivational-reels', name: 'Motivational', description: 'Inspiring quotes, success stories, and mindset content', count: '50+', popular: true, price: 99 },
-    { id: 3, slug: 'luxury-lifestyle-reels', name: 'Luxury Lifestyle', description: 'Premium lifestyle, cars, travel, and success aesthetic', count: '50+', bestseller: true, price: 99 },
-    { id: 4, slug: 'nature-travel-reels', name: 'Nature & Travel', description: 'Stunning landscapes, travel destinations, and nature beauty', count: '50+', price: 99 },
-    { id: 5, slug: 'sanatan-dharm-reels', name: 'Sanatan Dharm', description: 'Spiritual content, mantras, temple visuals, and dharmic wisdom', count: '50+', popular: true, price: 99 },
-    { id: 6, slug: 'tech-gadgets-reels', name: 'Tech & Gadgets', description: 'Latest gadgets, tech reviews, and futuristic content', count: '50+', price: 99 },
-    { id: 7, slug: 'food-cooking-reels', name: 'Food & Cooking', description: 'Recipes, food photography, and cooking tutorials', count: '50+', price: 99 },
-    { id: 8, slug: 'fashion-style-reels', name: 'Fashion & Style', description: 'Outfit ideas, fashion trends, and styling tips', count: '50+', price: 99 },
-    { id: 9, slug: 'business-finance-reels', name: 'Business & Finance', description: 'Money tips, investing, and entrepreneurship', count: '50+', price: 99 },
-    { id: 10, slug: 'gaming-reels', name: 'Gaming', description: 'Gaming clips, highlights, and gaming culture', count: '50+', price: 99 },
-    { id: 11, slug: 'cars-automobiles-reels', name: 'Cars & Automobiles', description: 'Supercars, car reviews, and automotive content', count: '50+', bestseller: true, price: 99 },
-    { id: 12, slug: 'comedy-entertainment-reels', name: 'Comedy & Entertainment', description: 'Funny clips, memes, and entertainment content', count: '50+', price: 99 },
-];
-
-// Mega Bundles (6 items)
-const megaBundles = [
-    { id: 1, slug: 'ultimate-motivation-pack', name: 'Ultimate Motivation Pack', pieces: '5,000+', description: 'Massive collection of motivational quotes, success stories, and mindset content', price: 149, popular: true },
-    { id: 2, slug: 'luxury-empire-bundle', name: 'Luxury Empire Bundle', pieces: '3,000+', description: 'Cars, jets, mansions, watches, and ultimate luxury lifestyle content', price: 149, bestseller: true },
-    { id: 3, slug: 'fitness-mega-collection', name: 'Fitness Mega Collection', pieces: '2,500+', description: 'Complete gym and fitness content library for fitness pages', price: 149 },
-    { id: 4, slug: 'spiritual-wisdom-pack', name: 'Spiritual Wisdom Pack', pieces: '4,000+', description: 'Comprehensive Sanatan Dharm, meditation, and spiritual content', price: 149, popular: true },
-    { id: 5, slug: 'complete-nature-bundle', name: 'Complete Nature Bundle', pieces: '2,000+', description: 'Mountains, oceans, forests, and stunning natural landscapes', price: 149 },
-    { id: 6, slug: 'business-mastery-pack', name: 'Business Mastery Pack', pieces: '3,500+', description: 'Entrepreneurship, money mindset, and business content', price: 149 },
-];
-
-// Courses
-const courses = [
-    { id: 1, name: 'Complete n8n Automation Mastery', description: 'Master workflow automation from zero to expert', status: 'coming-soon' },
-    { id: 2, name: 'Social Media Growth Blueprint', description: 'Proven strategies to grow on Instagram, YouTube, and TikTok', status: 'coming-soon' },
-    { id: 3, name: 'AI Content Creation Course', description: 'Create viral content using AI tools and automation', status: 'coming-soon' },
-    { id: 4, name: 'Faceless YouTube Mastery', description: 'Build and monetize faceless YouTube channels', status: 'coming-soon' },
-    { id: 5, name: 'Digital Product Business', description: 'Launch and scale your digital product empire', status: 'coming-soon' },
+    { id: 'reels', name: 'Reels Bundles', icon: Sparkles, count: reelsBundles.length },
+    { id: 'mega', name: 'Mega Bundles', icon: Crown, count: megaBundles.length },
+    { id: 'courses', name: 'Courses', icon: BookOpen, count: courses.length },
 ];
 
 export default function ProductsPage() {

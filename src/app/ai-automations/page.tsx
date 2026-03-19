@@ -10,173 +10,22 @@ import {
     CheckCircle2,
     ArrowRight,
     Sparkles,
-    Youtube,
-    Instagram,
     MessageCircle,
     Mail,
     Database,
-    FileText,
-    Calendar,
     ShoppingCart,
     CreditCard,
-    RefreshCw
+    RefreshCw,
+    Calendar
 } from 'lucide-react';
 import { ScrollReveal, SlideUp } from '@/components/animations';
 import { Button, Card, Badge, SectionHeading } from '@/components/ui';
 import { useCart } from '@/context/CartContext';
 import { BookNowModal } from '@/components/booking/BookNowModal';
+import { oneTimeAutomations, subscriptionAutomations } from '@/data/automations';
+import type { OneTimeAutomation, SubscriptionAutomation } from '@/data/automations';
+import { getIcon } from '@/lib/icon-map';
 
-// One-time purchase automations
-const oneTimeAutomations = [
-    {
-        id: 'drive-to-reels',
-        name: 'DriveToReels Scheduler',
-        description: 'Smart video distribution from Google Drive. Multi-platform scheduling with auto-captions and strategic hashtags.',
-        price: 99,
-        originalPrice: 149,
-        icon: Calendar,
-        features: [
-            'Google Drive integration',
-            'Multi-platform scheduling (IG + YT)',
-            'Auto-caption generation',
-            'Strategic hashtag application',
-            'Time-zone optimized posting',
-            '30-day setup support'
-        ],
-        popular: false,
-        tag: 'Entry Level'
-    },
-    {
-        id: 'ai-trendradar',
-        name: 'AI TrendRadar',
-        description: 'Content intelligence system for AI tools content. Daily trending discovery and organized idea database.',
-        price: 199,
-        originalPrice: 299,
-        icon: Sparkles,
-        features: [
-            'Daily trending AI tool discovery',
-            'Organized idea database (Google Sheets)',
-            'Content angle suggestions',
-            'Competitive analysis insights',
-            'Video walkthrough tutorials',
-            '30-day setup support'
-        ],
-        popular: false,
-        tag: null
-    },
-    {
-        id: 'storyshorts-engine',
-        name: 'StoryShorts AI Engine',
-        description: 'Viral story automation for short-form video creation. AI voiceover, gameplay backgrounds, and multi-platform scheduling.',
-        price: 249,
-        originalPrice: 399,
-        icon: Youtube,
-        features: [
-            'Curated trending story discovery',
-            'AI voiceover generation',
-            'Gameplay background integration',
-            'Professional subtitle styling',
-            'Multi-platform scheduling (YT + IG)',
-            '30-day setup support'
-        ],
-        popular: true,
-        tag: 'Best Seller'
-    },
-    {
-        id: 'cineclips-creator',
-        name: 'CineClips Creator Pro',
-        description: 'Movie/series clip production pipeline. Scene extraction, short-form optimization, and automated upload scheduling.',
-        price: 399,
-        originalPrice: 599,
-        icon: FileText,
-        features: [
-            'Scene identification & extraction',
-            'Short-form optimization (9:16)',
-            'Quality enhancement',
-            'Automated upload scheduling',
-            'Video walkthrough tutorials',
-            '30-day setup support'
-        ],
-        popular: false,
-        tag: null
-    },
-    {
-        id: 'memefactory-pro',
-        name: 'MemeFactory Pro',
-        description: 'Meme page acceleration system. Trend-aligned sourcing, custom branding, and direct platform integration.',
-        price: 499,
-        originalPrice: 749,
-        icon: Instagram,
-        features: [
-            'Trend-aligned content sourcing',
-            'Custom branding overlay',
-            'Automated formatting & optimization',
-            'Direct platform integration',
-            'Video walkthrough tutorials',
-            '30-day setup support'
-        ],
-        popular: true,
-        tag: 'High Growth'
-    },
-];
-
-// Monthly subscription automations (Managed Service)
-const subscriptionAutomations = [
-    {
-        id: 'managed-starter',
-        name: 'Starter Plan',
-        description: 'Perfect for beginners. We host, run, and maintain 1 automation system for you. Zero technical hassle.',
-        monthlyPrice: 149,
-        yearlyPrice: 1499,
-        icon: Zap,
-        features: [
-            '1 automation system (hosted)',
-            'Cloud hosting & maintenance',
-            'Regular updates & bug fixes',
-            '24/7 system monitoring',
-            'Performance reporting',
-            'Email support'
-        ],
-        popular: false,
-        tag: 'Entry Level'
-    },
-    {
-        id: 'managed-growth',
-        name: 'Growth Plan',
-        description: 'For creators scaling 1-2 pages. We manage up to 3 automation systems with priority support.',
-        monthlyPrice: 399,
-        yearlyPrice: 3999,
-        icon: Bot,
-        features: [
-            'Up to 3 automation systems',
-            'Cloud hosting & maintenance',
-            'Regular updates & feature upgrades',
-            '24/7 system monitoring',
-            'Performance reporting',
-            'Priority support'
-        ],
-        popular: true,
-        tag: 'Most Popular'
-    },
-    {
-        id: 'managed-empire',
-        name: 'Empire Plan',
-        description: 'For multi-page operators & agencies. All 5 premium systems fully managed with priority support.',
-        monthlyPrice: 599,
-        yearlyPrice: 5999,
-        icon: Sparkles,
-        features: [
-            'All 5 automation systems',
-            'Cloud hosting & maintenance',
-            'Priority updates & custom features',
-            '24/7 system monitoring',
-            'Detailed performance reporting',
-            'Priority support + strategy calls'
-        ],
-        popular: true,
-        tag: 'Best Value'
-    },
-];
 
 export default function AIAutomationsPage() {
     const [activeTab, setActiveTab] = useState<'one-time' | 'subscription'>('one-time');
@@ -190,7 +39,7 @@ export default function AIAutomationsPage() {
         setIsModalOpen(true);
     };
 
-    const handleAddOneTimeToCart = (automation: typeof oneTimeAutomations[0]) => {
+    const handleAddOneTimeToCart = (automation: OneTimeAutomation) => {
         addItem({
             id: automation.id,
             name: automation.name,
@@ -200,7 +49,7 @@ export default function AIAutomationsPage() {
         });
     };
 
-    const handleAddSubscriptionToCart = (automation: typeof subscriptionAutomations[0]) => {
+    const handleAddSubscriptionToCart = (automation: SubscriptionAutomation) => {
         addItem({
             id: `${automation.id}-${billingCycle}`,
             name: automation.name,
@@ -322,7 +171,7 @@ export default function AIAutomationsPage() {
 
                                             <div className="flex items-start gap-4 mb-6">
                                                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                                                    <automation.icon className="w-7 h-7 text-primary" />
+                                                    {(() => { const Icon = getIcon(automation.icon); return <Icon className="w-7 h-7 text-primary" />; })()}
                                                 </div>
                                                 <div>
                                                     <h3 className="text-xl font-bold mb-2">{automation.name}</h3>
@@ -418,7 +267,7 @@ export default function AIAutomationsPage() {
 
                                             <div className="flex items-start gap-4 mb-6">
                                                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                                                    <automation.icon className="w-7 h-7 text-primary" />
+                                                    {(() => { const Icon = getIcon(automation.icon); return <Icon className="w-7 h-7 text-primary" />; })()}
                                                 </div>
                                                 <div>
                                                     <h3 className="text-xl font-bold mb-2">{automation.name}</h3>
