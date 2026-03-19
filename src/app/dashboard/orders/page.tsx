@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     ArrowLeft, Package, Loader2, CheckCircle, Clock, XCircle,
-    ChevronDown, ChevronUp, ShoppingBag
+    ChevronDown, ChevronUp, ShoppingBag, Download, ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,6 +18,7 @@ interface OrderItem {
     price: number;
     quantity: number;
     product_id: string | null;
+    delivery_url: string | null;
 }
 
 export default function OrdersPage() {
@@ -50,11 +51,18 @@ export default function OrdersPage() {
         const supabase = getSupabaseClient();
         const { data } = await supabase
             .from('order_items')
-            .select('id, product_name, price, quantity, product_id')
+            .select('id, product_name, price, quantity, product_id, product:products(delivery_url)')
             .eq('order_id', orderId);
 
-        if (data) {
-            setOrderItems((prev) => ({ ...prev, [orderId]: data }));
+        // Flatten the joined product data
+        const items = (data || []).map((item: any) => ({
+            ...item,
+            delivery_url: item.product?.delivery_url || null,
+            product: undefined,
+        }));
+
+        if (items.length > 0) {
+            setOrderItems((prev) => ({ ...prev, [orderId]: items }));
         }
     };
 
@@ -218,7 +226,26 @@ export default function OrdersPage() {
                                                                             Qty: {item.quantity}
                                                                         </p>
                                                                     </div>
-                                                                    <p className="font-bold">₹{item.price}</p>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <p className="font-bold">₹{item.price}</p>
+                                                                        {order.status === 'paid' && item.delivery_url && (
+                                                                            <a
+                                                                                href={item.delivery_url}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                            >
+                                                                                <Button size="sm" className="gap-1.5 text-xs">
+                                                                                    <Download className="w-3.5 h-3.5" />
+                                                                                    Download
+                                                                                </Button>
+                                                                            </a>
+                                                                        )}
+                                                                        {order.status === 'paid' && !item.delivery_url && (
+                                                                            <span className="text-xs text-muted-foreground italic">
+                                                                                Processing...
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
                                                             ))}
                                                         </div>

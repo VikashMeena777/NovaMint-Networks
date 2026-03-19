@@ -52,7 +52,7 @@ export default function SettingsPage() {
                                     >
                                         <span
                                             className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-                                                emailNotifications ? 'translate-x-5.5' : 'translate-x-0.5'
+                                                emailNotifications ? 'translate-x-[22px]' : 'translate-x-0.5'
                                             }`}
                                         />
                                     </button>
@@ -72,7 +72,7 @@ export default function SettingsPage() {
                                     >
                                         <span
                                             className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-                                                marketingEmails ? 'translate-x-5.5' : 'translate-x-0.5'
+                                                marketingEmails ? 'translate-x-[22px]' : 'translate-x-0.5'
                                             }`}
                                         />
                                     </button>

@@ -145,10 +145,10 @@ export default function HomePage() {
               className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto"
             >
               {[
-                { value: 50,   suffix: '+',  label: 'Digital Products' },
-                { value: 17,   suffix: '',   label: 'Services' },
-                { value: 100,  suffix: '+',  label: 'Happy Clients' },
-                { value: 500,  suffix: '+',  label: 'Content Pieces' },
+                { value: 50, suffix: '+', label: 'Digital Products' },
+                { value: 17, suffix: '', label: 'Services' },
+                { value: 100, suffix: '+', label: 'Happy Clients' },
+                { value: 500, suffix: '+', label: 'Content Pieces' },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
@@ -234,10 +234,10 @@ function StatsSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   const stats = [
-    { icon: Briefcase, value: 50,   suffix: '+', label: 'Projects Completed',  description: 'Successful deliveries',    color: 'from-nova-purple to-electric-blue' },
-    { icon: Users,     value: 100,  suffix: '+', label: 'Happy Clients',        description: 'Creators served globally', color: 'from-electric-blue to-cyan' },
-    { icon: Clock,     value: 1000, suffix: '+', label: 'Hours Saved',          description: 'Through automation',       color: 'from-cyan to-mint-green' },
-    { icon: Award,     value: 99,   suffix: '%', label: 'Satisfaction Rate',    description: 'Client happiness',         color: 'from-hot-pink to-gold' },
+    { icon: Briefcase, value: 50, suffix: '+', label: 'Projects Completed', description: 'Successful deliveries', color: 'from-nova-purple to-electric-blue' },
+    { icon: Users, value: 100, suffix: '+', label: 'Happy Clients', description: 'Creators served globally', color: 'from-electric-blue to-cyan' },
+    { icon: Clock, value: 1000, suffix: '+', label: 'Hours Saved', description: 'Through automation', color: 'from-cyan to-mint-green' },
+    { icon: Award, value: 99, suffix: '%', label: 'Satisfaction Rate', description: 'Client happiness', color: 'from-hot-pink to-gold' },
   ];
 
   return (
@@ -429,10 +429,10 @@ function WhyUsSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   const features = [
-    { icon: Shield,  title: 'Secure',   desc: 'Your data & assets are always protected', gradient: 'from-nova-purple to-electric-blue' },
-    { icon: Zap,     title: 'Fast',     desc: '24–48 hour delivery guaranteed',           gradient: 'from-electric-blue to-cyan' },
-    { icon: Award,   title: 'Quality',  desc: 'Premium work, unlimited revisions',        gradient: 'from-cyan to-mint-green' },
-    { icon: Users,   title: 'Support',  desc: '7-day week availability for you',          gradient: 'from-hot-pink to-gold' },
+    { icon: Shield, title: 'Secure', desc: 'Your data & assets are always protected', gradient: 'from-nova-purple to-electric-blue' },
+    { icon: Zap, title: 'Fast', desc: '24–48 hour delivery guaranteed', gradient: 'from-electric-blue to-cyan' },
+    { icon: Award, title: 'Quality', desc: 'Premium work, unlimited revisions', gradient: 'from-cyan to-mint-green' },
+    { icon: Users, title: 'Support', desc: '7-day week availability for you', gradient: 'from-hot-pink to-gold' },
   ];
 
   const benefits = [
@@ -671,7 +671,7 @@ function CTASection() {
               <Link href="/contact">
                 <Button
                   size="lg"
-                  className="bg-white text-nova-purple hover:bg-white/92 border-0 shadow-xl shadow-black/20 px-8 font-bold text-base"
+                  className="bg-white !text-[hsl(260,70%,25%)] hover:bg-white/90 border-0 shadow-xl shadow-black/20 px-8 font-bold text-base"
                 >
                   Get Started Today
                   <ArrowRight className="w-5 h-5" />

@@ -27,12 +27,12 @@ import { useCart } from '@/context/CartContext';
 // Product Categories
 const categories = [
     { id: 'all', name: 'All Products', icon: Package },
-    { id: 'reels', name: 'Reels Bundles', icon: Sparkles, count: 47 },
+    { id: 'reels', name: 'Reels Bundles', icon: Sparkles, count: 12 },
     { id: 'mega', name: 'Mega Bundles', icon: Crown, count: 24 },
     { id: 'courses', name: 'Courses', icon: BookOpen, count: 5 },
 ];
 
-// Reels Bundle Categories (47 items)
+// Reels Bundle Categories (12 items)
 const reelsBundles = [
     { id: 1, slug: 'fitness-gym-reels', name: 'Fitness & Gym', description: 'Workout motivation, gym tips, and fitness journey reels', count: '50+', price: 99 },
     { id: 2, slug: 'motivational-reels', name: 'Motivational', description: 'Inspiring quotes, success stories, and mindset content', count: '50+', popular: true, price: 99 },
@@ -48,7 +48,7 @@ const reelsBundles = [
     { id: 12, slug: 'comedy-entertainment-reels', name: 'Comedy & Entertainment', description: 'Funny clips, memes, and entertainment content', count: '50+', price: 99 },
 ];
 
-// Mega Bundles (24 items)
+// Mega Bundles (6 items)
 const megaBundles = [
     { id: 1, slug: 'ultimate-motivation-pack', name: 'Ultimate Motivation Pack', pieces: '5,000+', description: 'Massive collection of motivational quotes, success stories, and mindset content', price: 149, popular: true },
     { id: 2, slug: 'luxury-empire-bundle', name: 'Luxury Empire Bundle', pieces: '3,000+', description: 'Cars, jets, mansions, watches, and ultimate luxury lifestyle content', price: 149, bestseller: true },
@@ -178,7 +178,7 @@ export default function ProductsPage() {
                             <div className="mb-16">
                                 <div className="flex items-center gap-4 mb-4">
                                     <h2 className="text-3xl md:text-4xl font-bold">Reels Bundles</h2>
-                                    <Badge variant="success">47 Categories</Badge>
+                                    <Badge variant="success">12 Categories</Badge>
                                 </div>
                                 <p className="text-muted-foreground text-lg max-w-2xl">
                                     50+ viral-ready reels per bundle. Full resell rights included.
@@ -193,7 +193,7 @@ export default function ProductsPage() {
                                 {reelsBundles.map((bundle, index) => (
                                     <ScrollReveal key={bundle.id} delay={index * 0.05}>
                                         <motion.div
-                                            className="group p-8 rounded-2xl bg-card border border-border/30 hover:border-nova-purple/30 transition-all"
+                                            className="group h-full flex flex-col p-8 rounded-2xl bg-card border border-border/30 hover:border-nova-purple/30 transition-all"
                                             whileHover={{ y: -5 }}
                                         >
                                             {(bundle.popular || bundle.bestseller) && (
@@ -205,7 +205,7 @@ export default function ProductsPage() {
                                                 </Badge>
                                             )}
                                             <h3 className="text-xl font-bold mb-2">{bundle.name}</h3>
-                                            <p className="text-muted-foreground text-base mb-4">{bundle.description}</p>
+                                            <p className="text-muted-foreground text-base mb-4 flex-grow">{bundle.description}</p>
                                             <div className="flex items-center justify-between gap-2">
                                                 <span className="text-nova-purple font-semibold">{bundle.count} reels</span>
                                                 <div className="flex gap-2">
@@ -221,12 +221,7 @@ export default function ProductsPage() {
                                 ))}
                             </div>
 
-                            <div className="text-center mt-12">
-                                <Button variant="secondary" size="lg">
-                                    View All 47 Bundles
-                                    <ArrowRight className="w-5 h-5" />
-                                </Button>
-                            </div>
+
                         </div>
                     </motion.section>
                 )}
@@ -264,7 +259,7 @@ export default function ProductsPage() {
                                 {megaBundles.map((bundle, index) => (
                                     <ScrollReveal key={bundle.id} delay={index * 0.1}>
                                         <motion.div
-                                            className="group p-8 rounded-3xl bg-background border border-border/30 hover:border-gold/30 transition-all"
+                                            className="group h-full flex flex-col p-8 rounded-3xl bg-background border border-border/30 hover:border-gold/30 transition-all"
                                             whileHover={{ y: -8 }}
                                         >
                                             {(bundle.popular || bundle.bestseller) && (
@@ -276,7 +271,7 @@ export default function ProductsPage() {
                                                 </Badge>
                                             )}
                                             <h3 className="text-xl font-bold mb-2">{bundle.name}</h3>
-                                            <p className="text-muted-foreground text-base mb-4">{bundle.description}</p>
+                                            <p className="text-muted-foreground text-base mb-4 flex-grow">{bundle.description}</p>
                                             <div className="mb-6">
                                                 <span className="text-3xl font-bold gradient-text">{bundle.pieces}</span>
                                                 <span className="text-muted-foreground ml-2">pieces</span>
@@ -352,14 +347,14 @@ export default function ProductsPage() {
                                 {courses.map((course, index) => (
                                     <ScrollReveal key={course.id} delay={index * 0.1}>
                                         <motion.div
-                                            className="group p-8 rounded-3xl bg-background border border-border/30 opacity-75 transition-all"
+                                            className="group h-full flex flex-col p-8 rounded-3xl bg-background border border-border/30 opacity-75 transition-all"
                                         >
                                             <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-6">
                                                 <BookOpen className="w-7 h-7 text-muted-foreground" />
                                             </div>
                                             <Badge variant="warning" className="mb-4">Coming Soon</Badge>
                                             <h3 className="text-xl font-bold mb-2">{course.name}</h3>
-                                            <p className="text-muted-foreground text-base mb-6">{course.description}</p>
+                                            <p className="text-muted-foreground text-base mb-6 flex-grow">{course.description}</p>
                                             <Button variant="secondary" className="w-full" disabled>
                                                 Notify Me
                                             </Button>
