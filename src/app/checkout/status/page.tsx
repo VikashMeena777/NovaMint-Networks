@@ -24,7 +24,7 @@ export default function CheckoutStatusPage() {
 
             const supabase = getSupabaseClient();
 
-            // Poll a few times as webhook may take a moment
+            // Poll Supabase a few times as webhook may take a moment
             let attempts = 0;
             const maxAttempts = 6;
             const interval = 3000;
@@ -38,16 +38,36 @@ export default function CheckoutStatusPage() {
 
                 if (data) {
                     setOrder(data);
-                    if (data.status !== 'pending' || attempts >= maxAttempts) {
+                    if (data.status !== 'pending') {
                         setLoading(false);
                         return;
                     }
                 }
 
                 attempts++;
+
                 if (attempts < maxAttempts) {
                     setTimeout(poll, interval);
                 } else {
+                    // Supabase still shows pending — check Cashfree directly
+                    try {
+                        const res = await fetch(`/api/orders/status?order_id=${orderId}`);
+                        if (res.ok) {
+                            const { payments } = await res.json();
+                            if (payments && payments.length > 0) {
+                                const latest = payments[0];
+                                const cfStatus =
+                                    latest.payment_status === 'SUCCESS' ? 'paid' :
+                                    latest.payment_status === 'FAILED' ? 'failed' :
+                                    'pending';
+                                if (cfStatus !== 'pending' && data) {
+                                    setOrder({ ...data, status: cfStatus });
+                                }
+                            }
+                        }
+                    } catch {
+                        // Cashfree check failed — keep existing status
+                    }
                     setLoading(false);
                 }
             };

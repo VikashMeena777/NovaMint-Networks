@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, ShoppingCart, User, Zap } from 'lucide-react';
+import { Menu, X, ChevronDown, ShoppingCart, User as UserIcon, Zap } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
@@ -172,7 +172,7 @@ export function Header() {
                         ) : (
                             <Link href="/login" className="hidden md:flex">
                                 <Button variant="ghost" size="sm" className="gap-1.5 text-sm">
-                                    <User className="w-4 h-4" />
+                                    <UserIcon className="w-4 h-4" />
                                     Login
                                 </Button>
                             </Link>
@@ -264,17 +264,27 @@ export function Header() {
                                 transition={{ delay: 0.28 }}
                                 className="pt-4 pb-2 space-y-2.5 border-t border-border/60"
                             >
-                                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button variant="outline" size="lg" className="w-full gap-2 rounded-xl border-border/60 text-base">
-                                        <User className="w-4 h-4" />
-                                        Login
-                                    </Button>
-                                </Link>
-                                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button size="lg" className="w-full rounded-xl text-base font-bold shadow-lg shadow-nova-purple/25">
-                                        Get Started Now
-                                    </Button>
-                                </Link>
+                                {user ? (
+                                    <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                                        <Button size="lg" className="w-full rounded-xl text-base font-bold shadow-lg shadow-nova-purple/25">
+                                            Dashboard
+                                        </Button>
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Button variant="outline" size="lg" className="w-full gap-2 rounded-xl border-border/60 text-base">
+                                                <UserIcon className="w-4 h-4" />
+                                                Login
+                                            </Button>
+                                        </Link>
+                                        <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Button size="lg" className="w-full rounded-xl text-base font-bold shadow-lg shadow-nova-purple/25">
+                                                Get Started Now
+                                            </Button>
+                                        </Link>
+                                    </>
+                                )}
                             </motion.div>
                         </div>
                     </motion.div>
