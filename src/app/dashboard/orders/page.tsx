@@ -79,7 +79,7 @@ export default function OrdersPage() {
     const getStatusVariant = (status: string) => {
         switch (status) {
             case 'paid': return 'success' as const;
-            case 'failed': return 'destructive' as const;
+            case 'failed': return 'warning' as const;
             default: return 'default' as const;
         }
     };
