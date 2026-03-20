@@ -63,17 +63,19 @@ export default function HomePage() {
   return (
     <>
       {/* ===== HERO ===== */}
-      <section ref={heroRef} className="relative min-h-[92vh] flex items-center overflow-hidden">
-        {/* Background grid */}
+      <section ref={heroRef} className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* Background grid + animated gradient sweep */}
         <div className="absolute inset-0 bg-grid-pattern opacity-100" />
+        <div className="absolute inset-0 animate-gradient-sweep" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" />
 
-        {/* Floating orbs */}
+        {/* Floating orbs — multicolor */}
         <div className="absolute top-1/4 left-[8%] w-72 h-72 md:w-96 md:h-96 rounded-full bg-nova-purple/20 blur-[80px]" />
         <div className="absolute bottom-1/4 right-[8%] w-64 h-64 md:w-80 md:h-80 rounded-full bg-electric-blue/15 blur-[70px]" />
+        <div className="absolute top-[60%] left-[20%] w-48 h-48 rounded-full bg-coral-accent/10 blur-[60px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-nova-purple/8 blur-[100px]" />
 
-        <div className="container relative pt-24 pb-20 md:pt-28 md:pb-24">
+        <div className="container relative pt-20 pb-14 md:pt-24 md:pb-16">
           <div className="max-w-5xl mx-auto text-center">
 
             {/* Launch badge */}
@@ -92,10 +94,10 @@ export default function HomePage() {
 
             {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 32 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.08] tracking-tight mb-6 md:mb-8 heading-pro"
+              initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
+              animate={heroInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.08] tracking-tight mb-6 md:mb-8 heading-pro font-syne"
             >
               Premium Digital{' '}
               <br className="hidden sm:block" />
@@ -121,7 +123,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 32 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-14 md:mb-20"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-10 md:mb-14"
             >
               <Link href="/products">
                 <Button size="lg" className="group w-full sm:w-auto h-13 px-8 text-base rounded-xl">
@@ -147,13 +149,13 @@ export default function HomePage() {
               {heroStats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.85 }}
                   animate={heroInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.4, delay: 0.55 + i * 0.08 }}
+                  transition={{ duration: 0.45, delay: 0.55 + i * 0.1, type: 'spring', stiffness: 200 }}
                   className="relative group"
                 >
-                  <div className="card-pro p-4 md:p-5 text-center rounded-2xl">
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-1">
+                  <div className="card-pro p-4 md:p-5 text-center rounded-2xl hover:shadow-lg transition-shadow duration-300">
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text-mint mb-1 font-mono">
                       <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                     </div>
                     <div className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</div>
@@ -243,13 +245,13 @@ function StatsSection() {
           className="text-center mb-12 md:mb-16"
         >
           <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-xs font-bold tracking-widest uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-mint text-xs font-bold tracking-widest uppercase">
               Our Impact
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 heading-pro">
             Numbers That{' '}
-            <span className="gradient-text">Speak Volumes</span>
+            <span className="gradient-text-mint">Speak Volumes</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
             Join the growing community of creators who transformed their content game with NovaMint.
@@ -260,15 +262,15 @@ function StatsSection() {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card-pro p-5 md:p-7 text-center group hover:scale-[1.02]"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.12, type: 'spring', stiffness: 180 }}
+              className="card-pro p-5 md:p-7 text-center group hover:scale-[1.03] transition-transform duration-300"
             >
-              <div className={`w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
                 {(() => { const Icon = getIcon(stat.icon); return <Icon className="w-6 h-6 text-white" />; })()}
               </div>
-              <div className="text-3xl md:text-4xl xl:text-5xl font-bold gradient-text">
+              <div className="text-3xl md:text-4xl xl:text-5xl font-bold gradient-text-mint font-mono">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </div>
               <div className="font-semibold text-sm md:text-base mt-2 mb-0.5">{stat.label}</div>
@@ -298,13 +300,13 @@ function ServicesSection() {
           className="text-center mb-12 md:mb-16"
         >
           <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-xs font-bold tracking-widest uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-coral text-xs font-bold tracking-widest uppercase">
               What We Offer
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 heading-pro">
             Everything You Need to{' '}
-            <span className="gradient-text">Scale Your Content</span>
+            <span className="gradient-text-warm">Scale Your Content</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             From video editing to AI automation — 17+ professional services to help you create, grow, and monetize.
@@ -315,14 +317,14 @@ function ServicesSection() {
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0, y: 30, rotateX: 5 }}
+              animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Link href={service.href} className="group block h-full">
-                <div className="card-pro h-full p-6 md:p-8 rounded-2xl relative overflow-hidden">
-                  {/* Subtle gradient on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                <div className="card-pro animate-border-glow h-full p-6 md:p-8 rounded-2xl relative overflow-hidden">
+                  {/* Alternating gradient directions */}
+                  <div className={`absolute inset-0 ${index % 2 === 0 ? 'bg-gradient-to-br' : 'bg-gradient-to-tl'} ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
 
                   <div className="relative flex items-start gap-5">
                     <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -331,10 +333,10 @@ function ServicesSection() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg md:text-xl font-bold group-hover:text-nova-purple transition-colors">
+                        <h3 className="text-lg md:text-xl font-bold group-hover:text-coral-accent transition-colors">
                           {service.title}
                         </h3>
-                        <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-nova-purple/12 text-nova-purple border border-nova-purple/20">
+                        <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full badge-coral">
                           {service.tag}
                         </span>
                       </div>
@@ -342,10 +344,10 @@ function ServicesSection() {
                         {service.description}
                       </p>
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-nova-purple text-lg">
+                        <span className="font-mono font-bold gradient-text-coral text-lg">
                           {service.price}
                         </span>
-                        <span className="flex items-center gap-1 text-sm text-muted-foreground group-hover:text-nova-purple transition-colors">
+                        <span className="flex items-center gap-1 text-sm text-muted-foreground group-hover:text-coral-accent transition-colors">
                           Learn more
                           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                         </span>
@@ -447,7 +449,7 @@ function WhyUsSection() {
             {features.map((item, index) => (
               <motion.div
                 key={item.title}
-                whileHover={{ y: -8, scale: 1.02 }}
+                whileHover={{ y: -8, scale: 1.03, rotate: index % 2 === 0 ? -1 : 1 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.2 + index * 0.1 }}
@@ -484,40 +486,49 @@ function TestimonialSection() {
           className="text-center mb-12 md:mb-16"
         >
           <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-xs font-bold tracking-widest uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-rose text-xs font-bold tracking-widest uppercase">
               Testimonials
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 heading-pro">
             Loved by{' '}
-            <span className="gradient-text">Creators Everywhere</span>
+            <span className="gradient-text-warm">Creators Everywhere</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Don't just take our word for it — hear from the creators we've helped scale.
+            Don&apos;t just take our word for it — hear from the creators we&apos;ve helped scale.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-10 md:mb-12">
+        {/* Featured testimonial layout: large center + smaller sides */}
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-10 md:mb-12 items-stretch">
           {homeTestimonials.map((t, index) => {
             const initials = t.name.split(' ').map((w) => w[0]).join('');
+            const isFeatured = index === 0;
+            // Directional entrance: left slides from left, center from bottom, right from right
+            const directionInitial = index === 0 ? { x: -30, opacity: 0 } : index === 2 ? { x: 30, opacity: 0 } : { y: 30, opacity: 0 };
+            const directionAnimate = index === 0 ? { x: 0, opacity: 1 } : index === 2 ? { x: 0, opacity: 1 } : { y: 0, opacity: 1 };
             return (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              initial={directionInitial}
+              animate={isInView ? directionAnimate : {}}
               transition={{ duration: 0.5, delay: index * 0.12 }}
-              className="card-pro p-6 md:p-7 rounded-2xl flex flex-col"
+              className={`card-pro rounded-2xl flex flex-col relative overflow-hidden quote-mark ${
+                isFeatured ? 'p-7 md:p-9 md:row-span-1 ring-1 ring-rose-accent/20' : 'p-6 md:p-7'
+              }`}
             >
               <div className="flex gap-1 mb-4">
                 {[...Array(t.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-gold text-gold" />
+                  <Star key={i} className="w-4 h-4 fill-rose-gold text-rose-accent" />
                 ))}
               </div>
-              <blockquote className="text-sm md:text-base text-foreground/85 leading-relaxed mb-5 flex-1">
+              <blockquote className={`text-foreground/85 leading-relaxed mb-5 flex-1 ${
+                isFeatured ? 'text-base md:text-lg' : 'text-sm md:text-base'
+              }`}>
                 &quot;{t.content}&quot;
               </blockquote>
               <div className="flex items-center gap-3 pt-4 border-t border-border/40">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-nova-purple to-electric-blue flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-accent to-coral-accent flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   {initials}
                 </div>
                 <div>
@@ -574,7 +585,7 @@ function CTASection() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-xs font-bold tracking-widest uppercase mb-6"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-white text-xs font-bold tracking-widest uppercase mb-6"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Ready to Scale?
@@ -594,7 +605,7 @@ function CTASection() {
               <Link href="/contact">
                 <Button
                   size="lg"
-                  className="bg-white !text-[hsl(260,70%,25%)] hover:bg-white/90 border-0 shadow-xl shadow-black/20 px-8 font-bold text-base"
+                  className="!bg-none !bg-white/20 !text-white hover:!bg-white/30 !border !border-white/30 px-8 font-bold text-base rounded-xl !shadow-none hover:shadow-xl backdrop-blur-sm"
                 >
                   Get Started Today
                   <ArrowRight className="w-5 h-5" />
@@ -604,7 +615,7 @@ function CTASection() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-white/40 text-white hover:bg-white/10 hover:border-white/60 px-8 text-base"
+                  className="!border-white/40 !text-white hover:!bg-white/10 hover:!border-white/60 px-8 text-base !shadow-none"
                 >
                   Explore Services
                 </Button>

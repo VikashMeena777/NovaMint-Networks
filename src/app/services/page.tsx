@@ -138,13 +138,13 @@ export default function ServicesPage() {
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                     <Link href="/contact">
-                                        <Button size="lg" className="bg-white text-nova-purple hover:bg-white/92 border-0 shadow-xl shadow-black/20 px-8 font-bold">
+                                        <Button size="lg" className="!bg-none !bg-white !text-nova-purple hover:!bg-white/92 !border-0 shadow-xl shadow-black/20 px-8 font-bold !shadow-none hover:shadow-xl">
                                             Get Custom Quote
                                             <ArrowRight className="w-5 h-5" />
                                         </Button>
                                     </Link>
                                     <Link href="/pricing">
-                                        <Button variant="outline" size="lg" className="border-white/40 text-white hover:bg-white/10 hover:border-white/60 px-8">
+                                        <Button variant="outline" size="lg" className="!border-white/40 !text-white hover:!bg-white/10 hover:!border-white/60 px-8 !shadow-none">
                                             View Pricing
                                         </Button>
                                     </Link>

@@ -27,6 +27,12 @@
   /* === ACCENT: Bright Cyan === */
   --color-accent: hsl(189 95% 48%);
 
+  /* === NEW ACCENTS === */
+  --color-mint-accent:    hsl(160 70% 52%);
+  --color-coral-accent:   hsl(12 90% 62%);
+  --color-rose-accent:    hsl(330 75% 65%);
+  --color-rose-gold:      hsl(20 60% 68%);
+
   /* === LEGACY (kept for compatibility) === */
   --color-nova-purple:    hsl(258 89% 66%);
   --color-electric-blue:  hsl(217 91% 60%);
@@ -43,6 +49,8 @@
 
   --font-family-sans:    var(--font-plus-jakarta-sans), 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   --font-family-display: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+  --font-family-mono:    var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --font-family-syne:    var(--font-syne), 'Syne', 'Outfit', system-ui, sans-serif;
 }
 
 /* =============================================
@@ -78,6 +86,11 @@
   --gold:          38 92% 50%;
   --cyan:          189 95% 48%;
   --deep-space:    240 20% 6%;
+
+  /* New accent palette */
+  --mint-accent:   160 70% 52%;
+  --coral-accent:  12 90% 62%;
+  --rose-accent:   330 75% 65%;
 }
 
 .dark {
@@ -196,7 +209,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-text-mint {
-  background: linear-gradient(135deg, hsl(160 84% 50%), hsl(189 95% 48%));
+  background: linear-gradient(135deg, hsl(160 70% 52%), hsl(189 95% 48%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, hsl(12 90% 62%), hsl(330 75% 65%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text-coral {
+  background: linear-gradient(135deg, hsl(12 90% 65%) 0%, hsl(38 92% 55%) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -332,6 +359,30 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
 }
 .text-balance { text-wrap: balance; }
+
+/* =============================================
+   Section Badge Variants
+   ============================================= */
+.badge-mint {
+  background: hsla(160, 70%, 52%, 0.12);
+  border: 1px solid hsla(160, 70%, 52%, 0.25);
+  color: hsl(160, 70%, 52%);
+}
+.badge-coral {
+  background: hsla(12, 90%, 62%, 0.12);
+  border: 1px solid hsla(12, 90%, 62%, 0.25);
+  color: hsl(12, 90%, 62%);
+}
+.badge-rose {
+  background: hsla(330, 75%, 65%, 0.12);
+  border: 1px solid hsla(330, 75%, 65%, 0.25);
+  color: hsl(330, 75%, 65%);
+}
+.badge-purple {
+  background: hsla(258, 89%, 66%, 0.12);
+  border: 1px solid hsla(258, 89%, 66%, 0.25);
+  color: hsl(258, 89%, 66%);
+}
 
 /* =============================================
    Button Glow
@@ -542,3 +593,76 @@ h1, h2, h3, h4, h5, h6 {
 .border-electric-blue { border-color: hsl(var(--electric-blue)); }
 .border-mint-green    { border-color: hsl(var(--mint-green)); }
 .border-gold          { border-color: hsl(var(--gold)); }
+
+/* New accent color utilities */
+.text-mint-accent   { color: hsl(var(--mint-accent)); }
+.text-coral-accent  { color: hsl(var(--coral-accent)); }
+.text-rose-accent   { color: hsl(var(--rose-accent)); }
+
+.bg-mint-accent     { background-color: hsl(var(--mint-accent)); }
+.bg-coral-accent    { background-color: hsl(var(--coral-accent)); }
+.bg-rose-accent     { background-color: hsl(var(--rose-accent)); }
+
+/* =============================================
+   Advanced Keyframe Animations
+   ============================================= */
+@keyframes gradient-sweep {
+  0%   { background-position: 0% 50%; opacity: 0.3; }
+  50%  { background-position: 100% 50%; opacity: 0.6; }
+  100% { background-position: 0% 50%; opacity: 0.3; }
+}
+.animate-gradient-sweep {
+  background: linear-gradient(
+    135deg,
+    hsla(258, 89%, 66%, 0.08) 0%,
+    hsla(12, 90%, 62%, 0.06) 30%,
+    hsla(189, 95%, 48%, 0.08) 60%,
+    hsla(330, 75%, 65%, 0.06) 100%
+  );
+  background-size: 300% 300%;
+  animation: gradient-sweep 8s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.animate-pulse-ring {
+  position: relative;
+}
+.animate-pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes border-glow {
+  0%   { border-color: hsla(258, 89%, 66%, 0.3); box-shadow: 0 0 12px -4px hsla(258, 89%, 66%, 0.2); }
+  33%  { border-color: hsla(160, 70%, 52%, 0.3); box-shadow: 0 0 12px -4px hsla(160, 70%, 52%, 0.2); }
+  66%  { border-color: hsla(12, 90%, 62%, 0.3); box-shadow: 0 0 12px -4px hsla(12, 90%, 62%, 0.2); }
+  100% { border-color: hsla(258, 89%, 66%, 0.3); box-shadow: 0 0 12px -4px hsla(258, 89%, 66%, 0.2); }
+}
+.card-pro:hover .animate-border-glow,
+.card-pro.animate-border-glow:hover {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Decorative quote mark */
+.quote-mark::before {
+  content: '\201C';
+  position: absolute;
+  top: -0.25rem;
+  left: 0.5rem;
+  font-size: 5rem;
+  line-height: 1;
+  font-family: Georgia, serif;
+  color: hsla(330, 75%, 65%, 0.08);
+  pointer-events: none;
+}
+
+/* Star fill with rose-gold */
+.fill-rose-gold { fill: hsl(var(--rose-accent)); }

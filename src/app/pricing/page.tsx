@@ -254,7 +254,7 @@ export default function PricingPage() {
                             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.12),transparent_55%)]" />
 
                             <div className="relative z-10 p-10 md:p-16 text-center">
-                                <Badge className="mb-5 bg-white/15 text-white border-white/20">
+                                <Badge className="mb-5 bg-white/15 !text-white !border-0 !shadow-none">
                                     <MessageCircle className="w-3 h-3 mr-1" />
                                     Need Custom Pricing?
                                 </Badge>
@@ -266,7 +266,7 @@ export default function PricingPage() {
                                     tailored to your specific needs and budget.
                                 </p>
                                 <Link href="/contact">
-                                    <Button size="lg" className="bg-white text-nova-purple hover:bg-white/92 border-0 shadow-xl shadow-black/20 px-8 font-bold">
+                                    <Button size="lg" className="!bg-none !bg-white/20 !text-white hover:!bg-white/30 !border !border-white/30 px-8 font-bold !shadow-none hover:shadow-xl backdrop-blur-sm">
                                         Get Custom Quote
                                         <ArrowRight className="w-5 h-5" />
                                     </Button>
