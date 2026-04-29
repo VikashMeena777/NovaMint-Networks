@@ -2,14 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCashfreeOrderStatus } from '@/lib/cashfree';
 import { createAdminClient } from '@/lib/supabase/server';
 import { sendOrderConfirmation } from '@/lib/resend';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 // POST /api/orders/verify — Manually verify & sync payment status from Cashfree
+// REQUIRES AUTHENTICATION — prevents unauthenticated users from marking orders as paid
 export async function POST(req: NextRequest) {
     try {
         const { order_id } = await req.json();
 
         if (!order_id) {
             return NextResponse.json({ error: 'order_id is required' }, { status: 400 });
+        }
+
+        // Authenticate user — this route MUST NOT be publicly accessible
+        const cookieStore = await cookies();
+        const supabaseAuth = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                    getAll() {
+                        return cookieStore.getAll();
+                    },
+                },
+            }
+        );
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const supabase = createAdminClient();

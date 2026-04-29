@@ -10,16 +10,14 @@ export async function POST(request: Request) {
         const timestamp = request.headers.get('x-webhook-timestamp') || '';
         const signature = request.headers.get('x-webhook-signature') || '';
 
-        // Verify webhook signature
-        if (signature && process.env.CASHFREE_SECRET_KEY) {
-            const isValid = verifyCashfreeWebhook(rawBody, timestamp, signature);
-            if (!isValid) {
-                console.error('Invalid Cashfree webhook signature');
-                return NextResponse.json(
-                    { error: 'Invalid signature' },
-                    { status: 400 }
-                );
-            }
+        // Verify webhook signature — ALWAYS verify, never skip
+        const isValid = verifyCashfreeWebhook(rawBody, timestamp, signature);
+        if (!isValid) {
+            console.error('Invalid Cashfree webhook signature');
+            return NextResponse.json(
+                { error: 'Invalid signature' },
+                { status: 403 }
+            );
         }
 
         const body = JSON.parse(rawBody);
@@ -110,9 +108,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, orderId });
     } catch (error) {
         console.error('Cashfree webhook error:', error);
+        // Always return 200 to prevent Cashfree retry storms on persistent errors
         return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
+            { message: 'Error processed' },
+            { status: 200 }
         );
     }
 }

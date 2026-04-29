@@ -58,13 +58,26 @@ export function verifyCashfreeWebhook(
     timestamp: string,
     signature: string
 ): boolean {
-    const body = timestamp + rawBody;
     const secretKey = process.env.CASHFREE_WEBHOOK_SECRET || process.env.CASHFREE_SECRET_KEY!;
+    if (!secretKey) {
+        console.error('CRITICAL: No webhook secret configured — rejecting webhook');
+        return false;
+    }
+    if (!signature) {
+        console.error('CRITICAL: No signature header — possible forged request');
+        return false;
+    }
+    const body = timestamp + rawBody;
     const expectedSignature = crypto
         .createHmac('sha256', secretKey)
         .update(body)
         .digest('base64');
-    return expectedSignature === signature;
+
+    // Use timing-safe comparison to prevent timing attacks
+    const sigBuf = Buffer.from(signature);
+    const expectedBuf = Buffer.from(expectedSignature);
+    if (sigBuf.length !== expectedBuf.length) return false;
+    return crypto.timingSafeEqual(sigBuf, expectedBuf);
 }
 
 // Fetch order status from Cashfree
