@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Cart item type
 export interface CartItem {
@@ -28,9 +28,35 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CART_STORAGE_KEY = 'novamint_cart_v2';
+
 export function CartProvider({ children }: { children: ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Hydrate cart from localStorage on mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(CART_STORAGE_KEY);
+            if (saved) {
+                setItems(JSON.parse(saved));
+            }
+        } catch {
+            // Ignore parse errors
+        }
+        setIsHydrated(true);
+    }, []);
+
+    // Sync cart to localStorage whenever items change
+    useEffect(() => {
+        if (!isHydrated) return;
+        try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+        } catch {
+            // Ignore storage quotas
+        }
+    }, [items, isHydrated]);
 
     const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
         setItems(prev => {
@@ -65,6 +91,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const clearCart = () => {
         setItems([]);
+        try {
+            localStorage.removeItem(CART_STORAGE_KEY);
+        } catch {
+            // Ignore
+        }
     };
 
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

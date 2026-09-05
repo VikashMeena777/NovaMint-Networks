@@ -315,3 +315,7 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(
     }
 );
 MotionCard.displayName = 'MotionCard';
+
+export { SpotlightCard } from './SpotlightCard';
+export { MagneticButton } from './MagneticButton';
+

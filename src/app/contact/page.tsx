@@ -1,330 +1,329 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    Send,
-    Clock,
-    CheckCircle2,
-    ArrowRight,
-    MapPin,
-    Instagram,
-    Youtube,
-    Twitter,
-    Linkedin
+  Send,
+  Clock,
+  CheckCircle2,
+  ArrowRight,
+  MapPin,
+  Mail,
+  Phone,
+  MessageSquare,
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  HelpCircle
 } from 'lucide-react';
-import { ScrollReveal, SlideUp } from '@/components/animations';
-import { Button, Card, Badge, SectionHeading, Input, Textarea } from '@/components/ui';
-import { siteConfig } from '@/lib/config';
-import { contactMethods, serviceTypes } from '@/data/contact';
-import { contactFaqs as faqs } from '@/data/faq';
-import { getIcon } from '@/lib/icon-map';
-
-/** Derive display value & action URL from a configKey. */
-function resolveContact(key: 'whatsapp' | 'email' | 'phone') {
-    const val = siteConfig[key];
-    if (key === 'whatsapp') return { value: val, action: `https://wa.me/${val.replace(/[^0-9]/g, '')}` };
-    if (key === 'email') return { value: val, action: `mailto:${val}` };
-    return { value: val, action: `tel:${val}` };
-}
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { toast } from 'sonner';
 
 export default function ContactPage() {
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: 'Video Editing & Retention Optimization',
+    budget: '₹25,000 - ₹50,000 / month',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error('Please fill in your name, email, and message details.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: `${formData.service} (Budget: ${formData.budget})`,
+          message: formData.message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit inquiry');
+      }
+
+      setIsSuccess(true);
+      toast.success('Your message was received! A studio architect will reply within 2 hours.');
+      setFormData({
         name: '',
         email: '',
         phone: '',
-        service: '',
+        service: 'Video Editing & Retention Optimization',
+        budget: '₹25,000 - ₹50,000 / month',
         message: '',
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to submit message. Please try again.';
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+  return (
+    <div className="min-h-screen bg-[#030407] text-white selection:bg-primary-500/30">
+      {/* Hero Header */}
+      <section className="relative pt-24 pb-14 md:pt-32 md:pb-20 overflow-hidden border-b border-white/[0.06]">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-primary-600/10 blur-[130px] pointer-events-none" />
 
-        try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    subject: formData.service,
-                    message: formData.message
-                })
-            });
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            DIRECT STUDIO ACCESS
+          </div>
 
-            if (!response.ok) {
-                throw new Error('Failed to submit form');
-            }
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Let’s Engineer Your{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent">
+              Content Pipeline.
+            </span>
+          </h1>
 
-            setIsSubmitted(true);
-            setFormData({ name: '', email: '', phone: '', service: '', message: '' });
-        } catch (error) {
-            console.error('Form submission error:', error);
-            alert('Failed to submit form. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+          <p className="mt-4 text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
+            Have a channel you want to scale, or need a custom multi-agent automation workflow? Send us your brief below.
+          </p>
+        </div>
+      </section>
 
-    return (
-        <>
-            {/* Hero Section */}
-            <section className="section pt-8">
-                <div className="container">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <SlideUp>
-                            <Badge variant="primary" className="mb-2">Contact Us</Badge>
-                        </SlideUp>
-
-                        <SlideUp delay={0.1}>
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-                                Let's Create Something{' '}
-                                <span className="gradient-text">Amazing Together</span>
-                            </h1>
-                        </SlideUp>
-
-                        <SlideUp delay={0.2}>
-                            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                                Have a project in mind? Want to discuss a custom solution?
-                                We're here to help you scale your content empire.
-                            </p>
-                        </SlideUp>
-                    </div>
+      {/* Main Grid: Form + Studio Details */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Form Area (Col 7) */}
+          <div className="lg:col-span-7">
+            <SpotlightCard className="p-6 sm:p-10 bg-[#08090C]/90 border-white/[0.08]">
+              {isSuccess ? (
+                <div className="py-12 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold font-display text-white">
+                    Inquiry Received!
+                  </h3>
+                  <p className="text-sm text-neutral-400 max-w-md mx-auto">
+                    Thank you for reaching out. We have received your channel brief and a lead automation engineer will review it shortly.
+                  </p>
+                  <button
+                    onClick={() => setIsSuccess(false)}
+                    className="mt-4 px-6 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] text-xs font-semibold text-white transition-all cursor-pointer"
+                  >
+                    Send Another Note
+                  </button>
                 </div>
-            </section>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-bold font-display text-white">
+                      Start a Project Brief
+                    </h3>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      Fill out the form below. We typically respond in under 2 hours.
+                    </p>
+                  </div>
 
-            {/* Contact Methods */}
-            <section className="py-12">
-                <div className="container">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {contactMethods.map((method, index) => {
-                            const Icon = getIcon(method.icon);
-                            const { value, action } = resolveContact(method.configKey);
-                            return (
-                            <ScrollReveal key={method.title} delay={index * 0.1}>
-                                <Card className="text-center h-full">
-                                    <div className={`w-14 h-14 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4`}>
-                                        <Icon className="w-7 h-7" />
-                                    </div>
-                                    <h3 className="text-xl font-semibold mb-2">{method.title}</h3>
-                                    <p className="text-muted-foreground text-base mb-2">{method.description}</p>
-                                    <p className="font-medium mb-4">{value}</p>
-                                    <a href={action} target="_blank" rel="noopener noreferrer">
-                                        <Button variant="secondary" className="w-full">
-                                            {method.actionLabel}
-                                            <ArrowRight className="w-4 h-4" />
-                                        </Button>
-                                    </a>
-                                </Card>
-                            </ScrollReveal>
-                        ); })}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Kavya Joshi"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                      />
                     </div>
-                </div>
-            </section>
 
-            {/* Contact Form & Info */}
-            <section className="section">
-                <div className="container">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Contact Form */}
-                        <ScrollReveal>
-                            <Card className="p-8">
-                                {isSubmitted ? (
-                                    <div className="text-center py-12">
-                                        <div className="w-16 h-16 rounded-full bg-mint-green/20 flex items-center justify-center mx-auto mb-6">
-                                            <CheckCircle2 className="w-8 h-8 text-mint-green" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
-                                        <p className="text-muted-foreground mb-6">
-                                            We've received your message and will get back to you within 24 hours.
-                                        </p>
-                                        <Button onClick={() => setIsSubmitted(false)}>
-                                            Send Another Message
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
-                                        <form onSubmit={handleSubmit} className="space-y-5">
-                                            <div className="grid md:grid-cols-2 gap-5">
-                                                <Input
-                                                    label="Your Name"
-                                                    placeholder="John Doe"
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                    required
-                                                />
-                                                <Input
-                                                    label="Email Address"
-                                                    type="email"
-                                                    placeholder="john@example.com"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                    required
-                                                />
-                                            </div>
-
-                                            <div className="grid md:grid-cols-2 gap-5">
-                                                <Input
-                                                    label="Phone Number"
-                                                    placeholder="+91 XXXXXXXXXX"
-                                                    value={formData.phone}
-                                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                                />
-                                                <div>
-                                                    <label className="block text-base font-medium text-foreground mb-2">
-                                                        Service Interested In
-                                                    </label>
-                                                    <select
-                                                        className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-nova-purple focus:ring-2 focus:ring-nova-purple/20"
-                                                        value={formData.service}
-                                                        onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                                                        required
-                                                    >
-                                                        <option value="">Select a service</option>
-                                                        {serviceTypes.map((service) => (
-                                                            <option key={service} value={service}>{service}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <Textarea
-                                                label="Your Message"
-                                                placeholder="Tell us about your project or requirements..."
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                required
-                                            />
-
-                                            <Button
-                                                type="submit"
-                                                size="lg"
-                                                className="w-full"
-                                                isLoading={isSubmitting}
-                                            >
-                                                <Send className="w-5 h-5" />
-                                                Send Message
-                                            </Button>
-                                        </form>
-                                    </>
-                                )}
-                            </Card>
-                        </ScrollReveal>
-
-                        {/* Additional Info */}
-                        <div className="space-y-8">
-                            <ScrollReveal delay={0.1}>
-                                <Card>
-                                    <h3 className="text-xl font-semibold mb-4">Response Time</h3>
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-lg bg-nova-purple/20 flex items-center justify-center flex-shrink-0">
-                                            <Clock className="w-5 h-5 text-nova-purple" />
-                                        </div>
-                                        <div>
-                                            <p className="text-muted-foreground">
-                                                We typically respond within <strong className="text-foreground">2-4 hours</strong> during
-                                                business hours (10 AM - 10 PM IST). For urgent inquiries,
-                                                WhatsApp is the fastest way to reach us.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </ScrollReveal>
-
-                            <ScrollReveal delay={0.2}>
-                                <Card>
-                                    <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
-                                    <p className="text-muted-foreground mb-4">
-                                        Stay updated with our latest work, tips, and offers on social media.
-                                    </p>
-                                    <div className="flex gap-3">
-                                        {[
-                                            { icon: Instagram, href: siteConfig.social.instagram, label: 'Instagram' },
-                                            { icon: Youtube, href: siteConfig.social.youtube, label: 'YouTube' },
-                                            { icon: Twitter, href: siteConfig.social.twitter, label: 'Twitter' },
-                                            { icon: Linkedin, href: siteConfig.social.linkedin, label: 'LinkedIn' },
-                                        ].map((social) => (
-                                            <motion.a
-                                                key={social.label}
-                                                href={social.href}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-nova-purple hover:border-nova-purple transition-colors"
-                                                aria-label={social.label}
-                                            >
-                                                <social.icon className="w-5 h-5" />
-                                            </motion.a>
-                                        ))}
-                                    </div>
-                                </Card>
-                            </ScrollReveal>
-
-                            <ScrollReveal delay={0.3}>
-                                <Card>
-                                    <h3 className="text-xl font-semibold mb-4">Location</h3>
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-lg bg-mint-green/20 flex items-center justify-center flex-shrink-0">
-                                            <MapPin className="w-5 h-5 text-mint-green" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">India</p>
-                                            <p className="text-muted-foreground">
-                                                We work remotely and serve clients globally.
-                                                No matter where you are, we can help you scale.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </ScrollReveal>
-                        </div>
+                    <div>
+                      <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                        Work / Creator Email *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="kavya@channel.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                      />
                     </div>
-                </div>
-            </section>
+                  </div>
 
-            {/* FAQ Section */}
-            <section className="section bg-card/50">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="FAQ"
-                            title="Frequently Asked Questions"
-                            description="Quick answers to common questions."
-                        />
-                    </ScrollReveal>
-
-                    <div className="max-w-3xl mx-auto">
-                        <div className="space-y-4">
-                            {faqs.map((faq, index) => (
-                                <ScrollReveal key={index} delay={index * 0.1}>
-                                    <Card>
-                                        <h3 className="font-semibold mb-2">{faq.question}</h3>
-                                        <p className="text-muted-foreground">{faq.answer}</p>
-                                    </Card>
-                                </ScrollReveal>
-                            ))}
-                        </div>
-
-                        <ScrollReveal delay={0.4}>
-                            <div className="text-center mt-8">
-                                <Link href="/faq">
-                                    <Button variant="secondary">
-                                        View All FAQs
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Button>
-                                </Link>
-                            </div>
-                        </ScrollReveal>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                        WhatsApp / Phone (Optional)
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                      />
                     </div>
+
+                    <div>
+                      <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                        Service Scope
+                      </label>
+                      <select
+                        value={formData.service}
+                        onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-[#0b0c12] border border-white/[0.08] text-sm text-white focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                      >
+                        <option value="Video Editing & Retention Optimization">Cinematic Video Editing Retainer</option>
+                        <option value="Autonomous AI Agent Pipelines">Autonomous AI / n8n Pipelines</option>
+                        <option value="Omnichannel Growth & Auto-Publishing">Omnichannel Growth Architecture</option>
+                        <option value="Custom Enterprise Solution">Custom Enterprise Pod</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                      Estimated Monthly Budget
+                    </label>
+                    <select
+                      value={formData.budget}
+                      onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-[#0b0c12] border border-white/[0.08] text-sm text-white focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                    >
+                      <option value="Under ₹25,000 / month">Under ₹25,000 / month</option>
+                      <option value="₹25,000 - ₹50,000 / month">₹25,000 - ₹50,000 / month</option>
+                      <option value="₹50,000 - ₹1,00,000 / month">₹50,000 - ₹1,00,000 / month</option>
+                      <option value="₹1,00,000+ / month (Enterprise)">₹1,00,000+ / month (Enterprise)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-neutral-400 uppercase mb-1.5">
+                      Project Details & Channel Links *
+                    </label>
+                    <textarea
+                      required
+                      rows={4}
+                      placeholder="Share your YouTube / Instagram link, current publishing schedule, and primary bottlenecks..."
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary-500/80 transition-all font-sans"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-primary-600 via-primary-500 to-accent text-white font-semibold text-sm shadow-xl shadow-primary-950/60 hover:opacity-95 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Transmitting Brief...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Transmit Project Brief
+                      </>
+                    )}
+                  </button>
+
+                  <div className="flex items-center justify-center gap-2 text-[11px] text-neutral-500 font-mono">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    Encrypted submission. Your data and channel IP remain confidential.
+                  </div>
+                </form>
+              )}
+            </SpotlightCard>
+          </div>
+
+          {/* Direct Studio Channels (Col 5) */}
+          <div className="lg:col-span-5 space-y-6">
+            <SpotlightCard className="p-6 sm:p-8 bg-[#08090C]/80 border-white/[0.08]">
+              <h3 className="text-lg font-bold font-display text-white mb-4">
+                Fast-Track Communication
+              </h3>
+              <p className="text-xs text-neutral-400 leading-relaxed mb-6">
+                Prefer direct messaging or quick consultation calls? Reach out directly to our engineering desk:
+              </p>
+
+              <div className="space-y-4">
+                <a
+                  href="https://wa.me/919876543210"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-mono font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                      WhatsApp Studio Chat
+                    </div>
+                    <div className="text-[11px] text-neutral-500">+91 98765 43210 (Quick Queries)</div>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:hello@novamintnetworks.in"
+                  className="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-primary-500/40 hover:bg-primary-500/5 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-400 flex items-center justify-center shrink-0">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-mono font-semibold text-white group-hover:text-primary-400 transition-colors">
+                      Direct Architect Email
+                    </div>
+                    <div className="text-[11px] text-neutral-500">hello@novamintnetworks.in</div>
+                  </div>
+                </a>
+
+                <div className="flex items-center gap-3.5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-mono font-semibold text-white">
+                      Guaranteed SLA Response
+                    </div>
+                    <div className="text-[11px] text-neutral-500">&lt; 2 Hours during active market hours</div>
+                  </div>
                 </div>
-            </section>
-        </>
-    );
+              </div>
+            </SpotlightCard>
+
+            <SpotlightCard className="p-6 bg-[#08090C]/80 border-white/[0.08]">
+              <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span>Q2 STUDIO CAPACITY</span>
+              </div>
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                We onboard a maximum of 4 new creator retainers per quarter to maintain sub-24h turnaround SLAs. 2 slots remain for Q2.
+              </p>
+            </SpotlightCard>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -3,292 +3,238 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    Target,
-    Lightbulb,
-    Heart,
-    Zap,
-    Users,
-    Award,
-    Clock,
-    Rocket,
-    CheckCircle2,
-    ArrowRight,
-    Calendar,
-    Star,
+  Sparkles,
+  Zap,
+  Users,
+  Award,
+  Clock,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  Video,
+  Cpu,
+  TrendingUp,
+  Flame,
+  Terminal,
+  Layers
 } from 'lucide-react';
-import {
-    ScrollReveal,
-    SlideUp,
-    StaggerContainer,
-    StaggerItem
-} from '@/components/animations';
-import { Button, Card, Badge, SectionHeading } from '@/components/ui';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
-const teamMembers = [
-    {
-        name: 'Vikash Meena',
-        role: 'Founder & CEO',
-        bio: 'Passionate about AI automation and helping creators scale their content empire to new heights.',
-        gradient: 'from-nova-purple to-electric-blue',
-        initials: 'VM',
-    },
+const pods = [
+  {
+    name: 'Creative Retention Pod',
+    role: 'Cinematic Visuals & Motion Graphics',
+    icon: Video,
+    color: '#8B5CF6',
+    description: 'Master video editors and sound designers dedicated to crafting thumb-stopping 9:16 cuts that defeat algorithmic swipe-away rates.',
+    skills: ['Foley Sound Design', 'Kinetic Typography', '3D Motion Graphics', 'Retention Pacing'],
+  },
+  {
+    name: 'Autonomous Systems Pod',
+    role: 'n8n & Multi-Agent Architecture',
+    icon: Cpu,
+    color: '#06B6D4',
+    description: 'Engineers who wire AI models, transcription endpoints, and cloud APIs into zero-touch content ingestion and distribution pipelines.',
+    skills: ['n8n Cloud Workflows', 'Whisper & Gemini APIs', 'Automated FFmpeg Transcoding', 'Social API Webhooks'],
+  },
+  {
+    name: 'Audience Growth Pod',
+    role: 'Hook Scripting & Algorithmic Telemetry',
+    icon: TrendingUp,
+    color: '#10B981',
+    description: 'Data analysts tracking second-by-second drop-off heatmaps, continuously feeding empirical retention data back into our creative scripts.',
+    skills: ['Viral Hook Research', 'A/B Thumbnail Systems', 'Audience Retention Audits', 'Omnichannel Scheduling'],
+  },
 ];
 
-const values = [
-    { icon: Target,    title: 'Quality First',   description: 'We never compromise on quality. Every deliverable meets our high standards.',    gradient: 'from-nova-purple to-electric-blue' },
-    { icon: Lightbulb, title: 'Innovation',       description: 'We stay ahead with the latest AI tools and automation technologies.',             gradient: 'from-electric-blue to-cyan' },
-    { icon: Heart,     title: 'Client-Focused',   description: 'Your success is our success. We go the extra mile for every client.',            gradient: 'from-cyan to-mint-green' },
-    { icon: Zap,       title: 'Speed',            description: 'Fast turnaround times without compromising on quality — ever.',                  gradient: 'from-hot-pink to-gold' },
+const principles = [
+  {
+    title: 'Output Multiplied, Quality Uncompromised',
+    description: 'We never use generic AI video templates. AI handles the boring ingestion and transcription; human masters craft the emotion and storytelling.',
+  },
+  {
+    title: 'Rigorous Sub-24h First Cut SLA',
+    description: 'Speed is the ultimate competitive advantage in the creator economy. We deliver fast so your content matches real-time cultural moments.',
+  },
+  {
+    title: 'Total Intellectual Property Freedom',
+    description: 'You own 100% of raw footage, project files, custom n8n configurations, and finished assets. No vendor lock-in, ever.',
+  },
 ];
 
-const milestones = [
-    { year: '2024', title: 'Founded NovaMint Networks',  description: 'Started with a vision to help creators scale with AI automation.',   icon: Rocket },
-    { year: '2024', title: '50+ Projects Completed',     description: 'Reached our first major milestone in successful client deliveries.',  icon: CheckCircle2 },
-    { year: '2025', title: 'AI Automation Launch',        description: 'Launched our premium AI automation systems for content creators.',    icon: Zap },
-    { year: '2025', title: '100+ Happy Clients',          description: 'Growing community of satisfied creators, agencies and businesses.',   icon: Users },
-];
-
-const stats = [
-    { value: '50+',  label: 'Projects Delivered', icon: CheckCircle2, gradient: 'from-nova-purple to-electric-blue' },
-    { value: '100+', label: 'Happy Clients',       icon: Users,        gradient: 'from-electric-blue to-cyan' },
-    { value: '500+', label: 'Hours Saved',         icon: Clock,        gradient: 'from-cyan to-mint-green' },
-    { value: '5★',   label: 'Client Rating',       icon: Award,        gradient: 'from-hot-pink to-gold' },
+const timeline = [
+  {
+    year: '2024',
+    title: 'Founded NovaMint Networks',
+    desc: 'Began as a boutique post-production studio helping top creators scale past 100K subscribers.',
+  },
+  {
+    year: '2025',
+    title: 'Proprietary n8n AI Refinery Launched',
+    desc: 'Integrated autonomous multi-agent pipelines, saving 85% of manual ingest overhead for 100+ partner channels.',
+  },
+  {
+    year: '2026',
+    title: 'Category-Defining Creator Infrastructure',
+    desc: 'Managing over 10M+ organic monthly views across YouTube Shorts, Instagram Reels, and enterprise podcast networks.',
+  },
 ];
 
 export default function AboutPage() {
-    return (
-        <>
-            {/* Hero */}
-            <section className="relative py-24 md:py-32 overflow-hidden">
-                <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-                <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-nova-purple/15 blur-[80px]" />
-                <div className="absolute bottom-1/4 right-1/4 w-60 h-60 rounded-full bg-electric-blue/12 blur-[70px]" />
+  return (
+    <div className="min-h-screen bg-[#030407] text-white selection:bg-primary-500/30">
+      {/* Hero Header */}
+      <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden border-b border-white/[0.06]">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-primary-600/10 blur-[130px] pointer-events-none" />
 
-                <div className="container relative">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <SlideUp>
-                            <div className="flex justify-center mb-5">
-                                <Badge variant="primary">About Us</Badge>
-                            </div>
-                        </SlideUp>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            THE NOVAMINT MANIFESTO
+          </div>
 
-                        <SlideUp delay={0.1}>
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 heading-pro">
-                                Building the Future of{' '}
-                                <span className="gradient-text">Content Creation</span>
-                            </h1>
-                        </SlideUp>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Engineering the Future of{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent">
+              Creator Output.
+            </span>
+          </h1>
 
-                        <SlideUp delay={0.2}>
-                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                                NovaMint Networks is a premium agency helping creators, influencers,
-                                and businesses scale their content with AI automation and professional services.
-                            </p>
-                        </SlideUp>
-                    </div>
+          <p className="mt-5 text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
+            We are not a traditional, slow creative agency. We are a high-throughput studio infrastructure pairing human creative masters with autonomous AI systems.
+          </p>
+        </div>
+      </section>
+
+      {/* Specialist Pods */}
+      <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary-400">
+            AGENCY ARCHITECTURE
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display text-white mt-1">
+            Specialized Creator Pods
+          </h2>
+          <p className="text-sm text-neutral-400 mt-2">
+            Every client is assigned a dedicated multi-disciplinary pod configured for their niche.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {pods.map((pod) => {
+            const Icon = pod.icon;
+
+            return (
+              <SpotlightCard
+                key={pod.name}
+                className="p-6 sm:p-8 flex flex-col justify-between bg-[#08090C]/80 border-white/[0.08]"
+              >
+                <div>
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-white/10"
+                    style={{ backgroundColor: `${pod.color}15`, color: pod.color }}
+                  >
+                    <Icon className="w-6 h-6" />
+                  </div>
+
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400">
+                    {pod.role}
+                  </span>
+                  <h3 className="text-xl font-bold font-display text-white mt-1">{pod.name}</h3>
+
+                  <p className="text-xs sm:text-sm text-neutral-400 mt-3 leading-relaxed">
+                    {pod.description}
+                  </p>
+
+                  <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2">
+                    <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider block mb-2">
+                      CORE CAPABILITIES
+                    </span>
+                    {pod.skills.map((skill) => (
+                      <div key={skill} className="flex items-center gap-2 text-xs text-neutral-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                        <span>{skill}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-            </section>
+              </SpotlightCard>
+            );
+          })}
+        </div>
+      </section>
 
-            {/* Stats */}
-            <section className="py-12 border-y border-border/50 bg-card/40 backdrop-blur-sm">
-                <div className="container">
-                    <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                        {stats.map((stat) => (
-                            <StaggerItem key={stat.label} className="text-center">
-                                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-3 shadow-md`}>
-                                    <stat.icon className="w-5 h-5 text-white" />
-                                </div>
-                                <div className="text-3xl md:text-4xl font-bold gradient-text mb-1">{stat.value}</div>
-                                <div className="text-muted-foreground text-sm">{stat.label}</div>
-                            </StaggerItem>
-                        ))}
-                    </StaggerContainer>
+      {/* Principles */}
+      <section className="py-16 md:py-24 border-t border-white/[0.06] bg-[#050608]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent">
+              HOW WE OPERATE
+            </span>
+            <h2 className="text-3xl font-bold font-display text-white mt-1">
+              Our Core Principles
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {principles.map((p, index) => (
+              <SpotlightCard key={p.title} className="p-6 bg-[#08090C]/90 border-white/[0.08]">
+                <div className="text-xs font-mono text-primary-400 font-bold mb-2">
+                  0{index + 1} // RULE
                 </div>
-            </section>
+                <h3 className="text-base font-bold text-white mb-2">{p.title}</h3>
+                <p className="text-xs text-neutral-400 leading-relaxed">{p.description}</p>
+              </SpotlightCard>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            {/* Our Story */}
-            <section className="section">
-                <div className="container">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <ScrollReveal>
-                            <div>
-                                <div className="flex mb-5">
-                                    <Badge variant="primary">Our Story</Badge>
-                                </div>
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 heading-pro">
-                                    From Passion to{' '}
-                                    <span className="gradient-text">Premium Agency</span>
-                                </h2>
-                                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                                    <p>
-                                        NovaMint Networks was born from a simple observation: creators were
-                                        spending too much time on repetitive tasks instead of focusing on
-                                        what they do best — creating amazing content.
-                                    </p>
-                                    <p>
-                                        We started by building automation systems for our own content channels,
-                                        and the results were incredible. What used to take hours now took minutes.
-                                        That's when we knew we had to share these solutions with other creators.
-                                    </p>
-                                    <p>
-                                        Today, we're proud to have helped hundreds of creators and businesses
-                                        transform their content workflows. Our mission: make content creation
-                                        effortless, scalable, and profitable.
-                                    </p>
-                                </div>
-                            </div>
-                        </ScrollReveal>
+      {/* Verified Timeline */}
+      <section className="py-16 md:py-24 border-t border-white/[0.06]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary-400">
+              TRACK RECORD
+            </span>
+            <h2 className="text-3xl font-bold font-display text-white mt-1">
+              The Evolution of NovaMint
+            </h2>
+          </div>
 
-                        <ScrollReveal delay={0.2}>
-                            <div className="relative">
-                                <div className="aspect-square rounded-3xl bg-gradient-to-br from-nova-purple/20 via-electric-blue/15 to-cyan/10 flex items-center justify-center border border-border/40">
-                                    <div className="text-center">
-                                        <Rocket className="w-24 h-24 text-nova-purple/60 mx-auto mb-4" />
-                                        <p className="text-sm font-semibold text-muted-foreground">Launching creators to the moon 🚀</p>
-                                    </div>
-                                </div>
-                                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-2xl bg-nova-purple/20 blur-xl" />
-                                <div className="absolute -bottom-4 -left-4 w-28 h-28 rounded-full bg-electric-blue/15 blur-xl" />
+          <div className="space-y-6 border-l border-white/[0.1] pl-6 ml-4">
+            {timeline.map((item) => (
+              <div key={item.year} className="relative">
+                <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-primary-500 ring-4 ring-[#030407]" />
+                <span className="text-xs font-mono font-bold text-primary-400">{item.year}</span>
+                <h3 className="text-lg font-bold text-white mt-0.5">{item.title}</h3>
+                <p className="text-xs text-neutral-400 mt-1 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                                {/* Floating badge */}
-                                <div className="absolute top-6 -right-4 card-pro p-3 rounded-xl flex items-center gap-2 text-sm font-semibold shadow-xl">
-                                    <Star className="w-4 h-4 fill-gold text-gold" />
-                                    <span>99% Satisfaction</span>
-                                </div>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </div>
-            </section>
-
-            {/* Values */}
-            <section className="section bg-card/30">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="Our Values"
-                            title="What Drives"
-                            titleHighlight="Us Forward"
-                            description="The principles that guide everything we create and deliver."
-                        />
-                    </ScrollReveal>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-                        {values.map((value, index) => (
-                            <ScrollReveal key={value.title} delay={index * 0.1}>
-                                <div className="card-pro p-6 md:p-7 h-full text-center rounded-2xl group hover:scale-[1.02] transition-transform duration-300">
-                                    <div className={`w-13 h-13 rounded-2xl bg-gradient-to-br ${value.gradient} flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                        <value.icon className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h3 className="text-lg font-bold mb-2">{value.title}</h3>
-                                    <p className="text-muted-foreground text-sm leading-relaxed">{value.description}</p>
-                                </div>
-                            </ScrollReveal>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Team */}
-            <section className="section">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="Our Team"
-                            title="Meet the"
-                            titleHighlight="Creators"
-                            description="The passionate people behind NovaMint Networks."
-                        />
-                    </ScrollReveal>
-
-                    <div className="max-w-sm mx-auto">
-                        {teamMembers.map((member, index) => (
-                            <ScrollReveal key={member.name} delay={index * 0.1}>
-                                <div className="card-pro p-8 text-center rounded-2xl">
-                                    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center mx-auto mb-5 shadow-xl shadow-nova-purple/25`}>
-                                        <span className="text-3xl font-bold text-white">{member.initials}</span>
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                                    <p className="text-nova-purple font-semibold text-sm mb-4">{member.role}</p>
-                                    <p className="text-muted-foreground text-sm leading-relaxed">{member.bio}</p>
-                                </div>
-                            </ScrollReveal>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Timeline */}
-            <section className="section bg-card/30">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="Our Journey"
-                            title="Key"
-                            titleHighlight="Milestones"
-                            description="Key moments in our growth story."
-                        />
-                    </ScrollReveal>
-
-                    <div className="max-w-2xl mx-auto">
-                        <div className="relative">
-                            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-nova-purple/60 via-electric-blue/40 to-transparent" />
-
-                            <div className="space-y-6">
-                                {milestones.map((milestone, index) => (
-                                    <ScrollReveal key={index} delay={index * 0.1}>
-                                        <div className="flex gap-6 relative pl-1">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-nova-purple to-electric-blue flex items-center justify-center z-10 shadow-lg shadow-nova-purple/25">
-                                                <milestone.icon className="w-5 h-5 text-white" />
-                                            </div>
-                                            <div className="card-pro flex-1 p-5 rounded-xl">
-                                                <span className="text-nova-purple font-mono text-xs font-bold">{milestone.year}</span>
-                                                <h3 className="text-base font-bold mt-1 mb-1">{milestone.title}</h3>
-                                                <p className="text-muted-foreground text-sm">{milestone.description}</p>
-                                            </div>
-                                        </div>
-                                    </ScrollReveal>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA */}
-            <section className="section">
-                <div className="container">
-                    <ScrollReveal>
-                        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl">
-                            <div className="absolute inset-0 bg-gradient-to-br from-nova-purple via-[hsl(240,70%,55%)] to-electric-blue" />
-                            <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.15),transparent_55%)]" />
-
-                            <div className="relative z-10 p-10 md:p-16 text-center">
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 heading-pro">
-                                    Ready to Work With Us?
-                                </h2>
-                                <p className="text-white/75 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-                                    Let's discuss how we can help you scale your content and achieve your goals.
-                                </p>
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                    <Link href="/contact">
-                                        <Button size="lg" className="!bg-none !bg-white !text-nova-purple hover:!bg-white/92 !border-0 shadow-xl shadow-black/20 px-8 font-bold !shadow-none hover:shadow-xl">
-                                            Get in Touch
-                                            <ArrowRight className="w-5 h-5" />
-                                        </Button>
-                                    </Link>
-                                    <Link href="/services">
-                                        <Button variant="outline" size="lg" className="!border-white/40 !text-white hover:!bg-white/10 hover:!border-white/60 px-8 !shadow-none">
-                                            View Our Services
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </ScrollReveal>
-                </div>
-            </section>
-        </>
-    );
+      {/* CTA */}
+      <section className="py-20 border-t border-white/[0.08] bg-[#06070a] text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold font-display text-white">
+            Ready to Partner with a High-Output Content Pod?
+          </h2>
+          <p className="mt-3 text-sm text-neutral-400">
+            Let’s review your channel and explore how NovaMint can take over your post-production and distribution.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <Link
+              href="/contact"
+              className="px-8 py-3.5 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-all shadow-xl shadow-white/10 flex items-center gap-2"
+            >
+              <span>Schedule Strategic Consultation</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

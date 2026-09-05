@@ -1,166 +1,194 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
-import { Button, Card } from '@/components/ui';
+import { CheckCircle, XCircle, Clock, Loader2, ArrowRight, Home } from 'lucide-react';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import type { Order } from '@/lib/types';
 
-export default function CheckoutStatusPage() {
-    const searchParams = useSearchParams();
-    const orderId = searchParams.get('order_id');
-    const [order, setOrder] = useState<Order | null>(null);
-    const [loading, setLoading] = useState(true);
+function CheckoutStatusContent() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('order_id');
+  const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function checkOrderStatus() {
-            if (!orderId) {
-                setLoading(false);
-                return;
+  useEffect(() => {
+    async function checkOrderStatus() {
+      if (!orderId) {
+        setLoading(false);
+        return;
+      }
+
+      const supabase = getSupabaseClient();
+
+      let attempts = 0;
+      const maxAttempts = 6;
+      const interval = 3000;
+
+      const poll = async () => {
+        const { data } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', orderId)
+          .single();
+
+        if (data) {
+          setOrder(data);
+          if (data.status !== 'pending') {
+            setLoading(false);
+            return;
+          }
+        }
+
+        attempts++;
+
+        if (attempts < maxAttempts) {
+          setTimeout(poll, interval);
+        } else {
+          try {
+            const res = await fetch('/api/orders/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_id: orderId }),
+            });
+            if (res.ok) {
+              const result = await res.json();
+              if (result.order) {
+                setOrder(result.order);
+              }
             }
-
-            const supabase = getSupabaseClient();
-
-            // Poll Supabase a few times as webhook may take a moment
-            let attempts = 0;
-            const maxAttempts = 6;
-            const interval = 3000;
-
-            const poll = async () => {
-                const { data } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .eq('id', orderId)
-                    .single();
-
-                if (data) {
-                    setOrder(data);
-                    if (data.status !== 'pending') {
-                        setLoading(false);
-                        return;
-                    }
-                }
-
-                attempts++;
-
-                if (attempts < maxAttempts) {
-                    setTimeout(poll, interval);
-                } else {
-                    // Supabase still shows pending — call verify endpoint to sync from Cashfree
-                    try {
-                        const res = await fetch('/api/orders/verify', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ order_id: orderId }),
-                        });
-                        if (res.ok) {
-                            const result = await res.json();
-                            if (result.order) {
-                                setOrder(result.order);
-                            }
-                        }
-                    } catch {
-                        // Verify check failed — keep existing status
-                    }
-                    setLoading(false);
-                }
-            };
-
-            poll();
+          } catch {
+            // keep existing status
+          }
+          setLoading(false);
         }
+      };
 
-        checkOrderStatus();
-    }, [orderId]);
+      poll();
+    }
 
-    const getStatusContent = () => {
-        if (loading) {
-            return {
-                icon: <Loader2 className="w-16 h-16 animate-spin text-primary" />,
-                title: 'Verifying Payment...',
-                description: 'Please wait while we confirm your payment.',
-                color: 'text-primary',
-            };
-        }
+    checkOrderStatus();
+  }, [orderId]);
 
-        if (!order) {
-            return {
-                icon: <XCircle className="w-16 h-16 text-red-500" />,
-                title: 'Order Not Found',
-                description: 'We could not find your order. Please contact support.',
-                color: 'text-red-500',
-            };
-        }
+  const getStatusContent = () => {
+    if (loading) {
+      return {
+        icon: <Loader2 className="w-14 h-14 animate-spin text-primary-400" />,
+        title: 'Verifying Gateway Transaction...',
+        description: 'Please wait while we confirm your payment telemetry with Cashfree.',
+        color: 'text-primary-300',
+      };
+    }
 
-        switch (order.status) {
-            case 'paid':
-                return {
-                    icon: <CheckCircle className="w-16 h-16 text-green-500" />,
-                    title: 'Payment Successful!',
-                    description: 'Your order has been confirmed. Check your email for details and download links.',
-                    color: 'text-green-500',
-                };
-            case 'failed':
-                return {
-                    icon: <XCircle className="w-16 h-16 text-red-500" />,
-                    title: 'Payment Failed',
-                    description: 'Your payment could not be processed. Please try again.',
-                    color: 'text-red-500',
-                };
-            default:
-                return {
-                    icon: <Clock className="w-16 h-16 text-yellow-500" />,
-                    title: 'Payment Pending',
-                    description: 'Your payment is still being processed. You\'ll receive a confirmation email shortly.',
-                    color: 'text-yellow-500',
-                };
-        }
-    };
+    if (!order) {
+      return {
+        icon: <XCircle className="w-14 h-14 text-red-400" />,
+        title: 'Order Record Not Found',
+        description: 'We could not locate this transaction ID. If money was debited, contact support with your UPI reference.',
+        color: 'text-red-400',
+      };
+    }
 
-    const content = getStatusContent();
+    switch (order.status) {
+      case 'paid':
+        return {
+          icon: <CheckCircle className="w-14 h-14 text-emerald-400" />,
+          title: 'Payment Confirmed & Verified!',
+          description: 'Your digital download link has been dispatched to your email.',
+          color: 'text-emerald-400',
+        };
+      case 'failed':
+        return {
+          icon: <XCircle className="w-14 h-14 text-red-400" />,
+          title: 'Transaction Declined',
+          description: 'Your payment could not be processed by your issuing bank. No funds were debited.',
+          color: 'text-red-400',
+        };
+      default:
+        return {
+          icon: <Clock className="w-14 h-14 text-amber-400" />,
+          title: 'Payment Awaiting Settlement',
+          description: 'Payment is processing. You will receive an instant email as soon as settlement is confirmed.',
+          color: 'text-amber-400',
+        };
+    }
+  };
 
-    return (
-        <div className="min-h-[70vh] flex items-center justify-center py-12">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="max-w-md w-full px-4"
-            >
-                <Card className="p-8 text-center">
-                    <div className="flex justify-center mb-6">{content.icon}</div>
-                    <h1 className={`text-2xl font-bold mb-3 ${content.color}`}>
-                        {content.title}
-                    </h1>
-                    <p className="text-muted-foreground mb-6">{content.description}</p>
+  const content = getStatusContent();
 
-                    {order && (
-                        <div className="bg-muted/30 rounded-lg p-4 mb-6 text-left">
-                            <p className="text-sm text-muted-foreground">Order ID</p>
-                            <p className="font-mono text-sm">{order.id.slice(0, 8)}</p>
-                            <p className="text-sm text-muted-foreground mt-2">Amount</p>
-                            <p className="font-bold text-lg">₹{order.total}</p>
-                        </div>
-                    )}
+  return (
+    <div className="min-h-[75vh] flex items-center justify-center px-4 py-16">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-md w-full"
+      >
+        <SpotlightCard className="p-8 text-center bg-[#08090C]/90 border-white/[0.1] shadow-2xl">
+          <div className="flex justify-center mb-6">{content.icon}</div>
+          <h1 className={`text-2xl font-bold font-display mb-2 ${content.color}`}>
+            {content.title}
+          </h1>
+          <p className="text-xs text-neutral-400 mb-6 leading-relaxed">{content.description}</p>
 
-                    <div className="flex flex-col gap-3">
-                        {order?.status === 'paid' && (
-                            <Link href="/dashboard">
-                                <Button className="w-full">Go to Dashboard</Button>
-                            </Link>
-                        )}
-                        {order?.status === 'failed' && (
-                            <Link href="/checkout">
-                                <Button className="w-full">Try Again</Button>
-                            </Link>
-                        )}
-                        <Link href="/">
-                            <Button variant="outline" className="w-full">Back to Home</Button>
-                        </Link>
-                    </div>
-                </Card>
-            </motion.div>
+          {order && (
+            <div className="bg-black/40 rounded-xl p-4 mb-6 text-left border border-white/[0.06] font-mono text-xs space-y-1.5">
+              <div className="flex justify-between">
+                <span className="text-neutral-500">Order ID:</span>
+                <span className="text-white font-medium">{order.id}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500">Total Settled:</span>
+                <span className="text-emerald-400 font-bold">₹{order.total}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500">Status:</span>
+                <span className="uppercase text-primary-300 font-semibold">{order.status}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-3">
+            {order?.status === 'paid' && (
+              <Link href="/dashboard/orders">
+                <button className="w-full py-3 px-4 rounded-xl bg-white text-black font-bold text-xs hover:bg-neutral-200 transition-all cursor-pointer flex items-center justify-center gap-2">
+                  <span>View Downloads in Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+            )}
+            {order?.status === 'failed' && (
+              <Link href="/checkout">
+                <button className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent text-white font-bold text-xs shadow-lg transition-all cursor-pointer">
+                  Try Again
+                </button>
+              </Link>
+            )}
+            <Link href="/">
+              <button className="w-full py-2.5 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-semibold text-neutral-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <Home className="w-3.5 h-3.5" />
+                <span>Return to Homepage</span>
+              </button>
+            </Link>
+          </div>
+        </SpotlightCard>
+      </motion.div>
+    </div>
+  );
+}
+
+export default function CheckoutStatusPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[75vh] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
         </div>
-    );
+      }
+    >
+      <CheckoutStatusContent />
+    </Suspense>
+  );
 }

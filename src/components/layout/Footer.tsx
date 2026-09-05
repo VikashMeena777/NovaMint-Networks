@@ -1,239 +1,296 @@
 'use client';
 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    Instagram,
-    Youtube,
-    Twitter,
-    Linkedin,
-    Mail,
-    Phone,
-    MapPin,
-    ArrowRight,
-    Heart,
-    Zap,
+  Instagram,
+  Youtube,
+  Twitter,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+  ArrowRight,
+  Zap,
+  ShieldCheck,
+  Lock,
+  CreditCard,
+  Sparkles,
+  CheckCircle2
 } from 'lucide-react';
-import { Button, Input } from '@/components/ui';
+import { toast } from 'sonner';
 
 const footerLinks = {
-    products: [
-        { label: 'Reels Bundles', href: '/products?category=reels' },
-        { label: 'Mega Bundles', href: '/products?category=mega' },
-        { label: 'Courses', href: '/products?category=courses' },
-        { label: 'AI Automations', href: '/products?category=automation' },
-    ],
-    services: [
-        { label: 'Video Editing', href: '/services' },
-        { label: 'Social Media', href: '/services' },
-        { label: 'Website Building', href: '/services' },
-        { label: 'All Services', href: '/services' },
-    ],
-    company: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Portfolio', href: '/portfolio' },
-        { label: 'Testimonials', href: '/testimonials' },
-        { label: 'Pricing', href: '/pricing' },
-    ],
-    support: [
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'FAQ', href: '/faq' },
-        { label: 'Terms of Service', href: '/terms' },
-        { label: 'Privacy Policy', href: '/privacy' },
-    ],
+  products: [
+    { label: 'Reels Bundles (₹99)', href: '/products?category=reels' },
+    { label: 'Mega Creator Bundles', href: '/products?category=mega' },
+    { label: 'Creator Academy', href: '/products?category=courses' },
+    { label: 'All Digital Assets', href: '/products' },
+  ],
+  services: [
+    { label: 'High-Retention Video Editing', href: '/services' },
+    { label: 'Omnichannel Social Growth', href: '/services' },
+    { label: 'Custom AI n8n Automations', href: '/ai-automations' },
+    { label: 'Web & Funnel Architecture', href: '/services' },
+  ],
+  company: [
+    { label: 'Agency Story & Pods', href: '/about' },
+    { label: 'Verified Portfolio & Metrics', href: '/portfolio' },
+    { label: 'Client Testimonials', href: '/testimonials' },
+    { label: 'Transparent Retainer Pricing', href: '/pricing' },
+  ],
+  legal: [
+    { label: 'Contact Studio', href: '/contact' },
+    { label: 'Frequently Asked Questions', href: '/faq' },
+    { label: 'Terms & Conditions', href: '/terms' },
+    { label: 'Privacy & Security Policy', href: '/privacy' },
+  ],
 };
 
 const socialLinks = [
-    { icon: Instagram, href: 'https://instagram.com/novamintnetworks', label: 'Instagram', color: 'hover:bg-gradient-to-br hover:from-[#f09433] hover:to-[#bc1888]' },
-    { icon: Youtube,   href: 'https://youtube.com/@novamintnetworks', label: 'YouTube',   color: 'hover:bg-red-600' },
-    { icon: Twitter,   href: 'https://twitter.com/novamintnet', label: 'Twitter',         color: 'hover:bg-sky-500' },
-    { icon: Linkedin,  href: 'https://linkedin.com/company/novamintnetworks', label: 'LinkedIn', color: 'hover:bg-blue-600' },
+  { icon: Instagram, href: 'https://instagram.com/novamintnetworks', label: 'Instagram', color: 'hover:text-pink-400' },
+  { icon: Youtube, href: 'https://youtube.com/@novamintnetworks', label: 'YouTube', color: 'hover:text-red-500' },
+  { icon: Twitter, href: 'https://twitter.com/novamintnet', label: 'Twitter', color: 'hover:text-sky-400' },
+  { icon: Linkedin, href: 'https://linkedin.com/company/novamintnetworks', label: 'LinkedIn', color: 'hover:text-blue-400' },
 ];
 
 export function Footer() {
-    const year = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const year = new Date().getFullYear();
 
-    return (
-        <footer className="relative bg-card/50 border-t border-border/60 overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-hero-pattern opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error('Please enter a valid work or creator email address.');
+      return;
+    }
 
-            <div className="relative section-container">
+    setIsSubscribing(true);
+    setTimeout(() => {
+      setIsSubscribing(false);
+      setEmail('');
+      toast.success('Welcome to the NovaMint Insider Dispatch! Check your inbox.');
+    }, 600);
+  };
 
-                {/* Newsletter */}
-                <div className="py-12 md:py-16 border-b border-border/50">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="flex justify-center mb-4"
-                        >
-                            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-xs font-bold tracking-widest uppercase">
-                                Newsletter
-                            </span>
-                        </motion.div>
-                        <motion.h3
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.05 }}
-                            className="text-2xl md:text-3xl font-bold mb-3 heading-pro"
-                        >
-                            Stay Ahead of the{' '}
-                            <span className="gradient-text">Creator Economy</span>
-                        </motion.h3>
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.1 }}
-                            className="text-muted-foreground mb-6 leading-relaxed"
-                        >
-                            Weekly tips, exclusive deals, and free resources delivered to your inbox.
-                        </motion.p>
-                        <motion.form
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.15 }}
-                            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-                            onSubmit={(e) => e.preventDefault()}
-                        >
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="flex-1"
-                            />
-                            <Button className="shrink-0 group">
-                                Subscribe
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                            </Button>
-                        </motion.form>
-                    </div>
-                </div>
+  return (
+    <footer className="relative bg-[#030407] border-t border-white/[0.08] text-white overflow-hidden">
+      {/* Subtle radial glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-40 bg-primary-600/10 blur-[120px] pointer-events-none" />
 
-                {/* Main Content */}
-                <div className="py-12 md:py-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Live Network Status Bar */}
+        <div className="py-4 border-b border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-neutral-400 font-mono">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-emerald-400 font-semibold">NETWORK STATUS: ALL SYSTEMS NOMINAL</span>
+            <span className="hidden md:inline text-neutral-600">|</span>
+            <span className="hidden md:inline text-neutral-400">Avg Ingest Latency: 1.4s</span>
+          </div>
 
-                    {/* Brand */}
-                    <div className="col-span-2 md:col-span-3 lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-2.5 mb-5">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-nova-purple to-electric-blue flex items-center justify-center shadow-md shadow-nova-purple/30">
-                                <Zap className="w-4.5 h-4.5 text-white" strokeWidth={2.5} />
-                            </div>
-                            <div className="flex items-baseline gap-0.5">
-                                <span className="font-bold text-xl text-nova-purple tracking-tight">Nova</span>
-                                <span className="font-bold text-xl text-foreground tracking-tight">Mint</span>
-                                <span className="font-medium text-xl text-muted-foreground tracking-tight"> Networks</span>
-                            </div>
-                        </Link>
-                        <p className="text-muted-foreground text-sm mb-6 max-w-xs leading-relaxed">
-                            Your one-stop destination for premium digital products, creative services,
-                            and AI automation solutions for content creators.
-                        </p>
+          <div className="flex items-center gap-2 text-neutral-400 font-mono">
+            <span className="px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-300 border border-primary-500/20 text-[11px]">
+              Q2 COHORT
+            </span>
+            <span>Accepting 2 New Creator Pipelines</span>
+          </div>
+        </div>
 
-                        <div className="space-y-3 text-sm text-muted-foreground mb-6">
-                            <a href="mailto:hello@novamintnetworks.in" className="flex items-center gap-2.5 hover:text-nova-purple transition-colors group">
-                                <Mail className="w-4 h-4 group-hover:text-nova-purple transition-colors flex-shrink-0" />
-                                hello@novamintnetworks.in
-                            </a>
-                            <a href="tel:+919876543210" className="flex items-center gap-2.5 hover:text-nova-purple transition-colors group">
-                                <Phone className="w-4 h-4 group-hover:text-nova-purple transition-colors flex-shrink-0" />
-                                +91 98765 43210
-                            </a>
-                            <div className="flex items-center gap-2.5">
-                                <MapPin className="w-4 h-4 flex-shrink-0" />
-                                <span>India (Remote worldwide)</span>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-2.5">
-                            {socialLinks.map((social) => (
-                                <motion.a
-                                    key={social.label}
-                                    href={social.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    whileHover={{ scale: 1.1, y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className={`w-9 h-9 rounded-xl bg-muted/60 border border-border/60 flex items-center justify-center text-muted-foreground hover:text-white hover:border-transparent transition-all duration-200 ${social.color}`}
-                                    aria-label={social.label}
-                                >
-                                    <social.icon className="w-4 h-4" />
-                                </motion.a>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Products */}
-                    <div>
-                        <h4 className="font-bold text-xs tracking-widest text-muted-foreground uppercase mb-5">Products</h4>
-                        <ul className="space-y-3">
-                            {footerLinks.products.map((link) => (
-                                <li key={link.label}>
-                                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-nova-purple transition-colors">
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Services */}
-                    <div>
-                        <h4 className="font-bold text-xs tracking-widest text-muted-foreground uppercase mb-5">Services</h4>
-                        <ul className="space-y-3">
-                            {footerLinks.services.map((link) => (
-                                <li key={link.label}>
-                                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-nova-purple transition-colors">
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Company */}
-                    <div>
-                        <h4 className="font-bold text-xs tracking-widest text-muted-foreground uppercase mb-5">Company</h4>
-                        <ul className="space-y-3">
-                            {footerLinks.company.map((link) => (
-                                <li key={link.label}>
-                                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-nova-purple transition-colors">
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Support */}
-                    <div>
-                        <h4 className="font-bold text-xs tracking-widest text-muted-foreground uppercase mb-5">Support</h4>
-                        <ul className="space-y-3">
-                            {footerLinks.support.map((link) => (
-                                <li key={link.label}>
-                                    <Link href={link.href} className="text-sm text-muted-foreground hover:text-nova-purple transition-colors">
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-
-                {/* Bottom Bar */}
-                <div className="py-5 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-3">
-                    <p className="text-xs text-muted-foreground">
-                        © {year} NovaMint Networks. All rights reserved.
-                    </p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        Made with <Heart className="w-3.5 h-3.5 text-hot-pink fill-hot-pink" /> in India
-                    </p>
-                </div>
+        {/* Newsletter & High-Impact Agency CTA */}
+        <div className="py-12 md:py-16 border-b border-white/[0.06]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-primary-300 mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />
+                THE DISPATCH BY NOVAMINT
+              </div>
+              <h3 className="text-2xl md:text-3xl font-extrabold font-display tracking-tight text-white">
+                Breakthrough AI Workflows & Viral Architecture.
+              </h3>
+              <p className="text-sm text-neutral-400 mt-2 max-w-md">
+                Get our weekly technical teardowns of 10M+ view creator systems, prompt engineering blueprints, and free product drops.
+              </p>
             </div>
-        </footer>
-    );
+
+            <div className="lg:col-span-6">
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md lg:ml-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your creator or agency email"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-primary-500/80 transition-all font-mono text-xs"
+                />
+                <button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="px-6 py-3 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-all disabled:opacity-50 shrink-0 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-white/10"
+                >
+                  <span>{isSubscribing ? 'Joining...' : 'Subscribe'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+              <div className="flex items-center gap-3 text-[11px] text-neutral-500 mt-2 lg:justify-end font-mono">
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Zero spam
+                </span>
+                <span>•</span>
+                <span>Unsubscribe anytime</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Links Navigation Matrix */}
+        <div className="py-14 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-8 md:gap-10">
+          {/* Brand Info (Col 4) */}
+          <div className="col-span-2 md:col-span-4 lg:col-span-4 space-y-4">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center shadow-lg shadow-primary-950/50">
+                <Zap className="w-4.5 h-4.5 text-white" strokeWidth={2.5} />
+              </div>
+              <div className="flex items-baseline tracking-tight">
+                <span className="font-display font-bold text-xl text-white">Nova</span>
+                <span className="font-display font-bold text-xl text-primary-400">Mint</span>
+                <span className="ml-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-500">
+                  NETWORKS
+                </span>
+              </div>
+            </Link>
+
+            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
+              Architecting high-status content engines, autonomous n8n workflows, and viral video pipelines for India & global top-tier digital creators.
+            </p>
+
+            <div className="space-y-2 text-xs text-neutral-400 font-mono pt-2">
+              <a href="mailto:hello@novamintnetworks.in" className="flex items-center gap-2 hover:text-white transition-colors">
+                <Mail className="w-3.5 h-3.5 text-primary-400" />
+                hello@novamintnetworks.in
+              </a>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-primary-400" />
+                Bengaluru • Remote Worldwide
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-3">
+              {socialLinks.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.label}
+                    className={`w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-neutral-400 transition-all hover:border-white/20 hover:scale-105 ${item.color}`}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Links (Col 2 each) */}
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300 mb-4">
+              Products
+            </h4>
+            <ul className="space-y-2.5 text-xs text-neutral-400">
+              {footerLinks.products.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300 mb-4">
+              Services
+            </h4>
+            <ul className="space-y-2.5 text-xs text-neutral-400">
+              {footerLinks.services.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300 mb-4">
+              Studio
+            </h4>
+            <ul className="space-y-2.5 text-xs text-neutral-400">
+              {footerLinks.company.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300 mb-4">
+              Legal & Help
+            </h4>
+            <ul className="space-y-2.5 text-xs text-neutral-400">
+              {footerLinks.legal.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Verified Badges & Trust Signals */}
+        <div className="py-6 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-4 text-[11px] text-neutral-500 font-mono">
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-1.5 text-neutral-400">
+              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              <span>256-Bit SSL Encrypted Checkout</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-neutral-400">
+              <CreditCard className="w-3.5 h-3.5 text-primary-400" />
+              <span>Official Cashfree Payment Gateway (UPI / Cards / Netbanking)</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-neutral-400">
+              <ShieldCheck className="w-3.5 h-3.5 text-accent" />
+              <span>Instant Digital Delivery via CloudFront</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Copyright */}
+        <div className="py-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-neutral-500">
+          <div>
+            © {year} NovaMint Networks Inc. All rights reserved.
+          </div>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <Link href="/privacy" className="hover:text-neutral-300 transition-colors">Privacy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-neutral-300 transition-colors">Terms</Link>
+            <span>•</span>
+            <Link href="/contact" className="hover:text-neutral-300 transition-colors">Support</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }

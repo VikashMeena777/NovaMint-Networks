@@ -15,27 +15,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'order_id is required' }, { status: 400 });
         }
 
-        // Authenticate user — this route MUST NOT be publicly accessible
-        const cookieStore = await cookies();
-        const supabaseAuth = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll();
-                    },
-                },
-            }
-        );
-        const { data: { user } } = await supabaseAuth.auth.getUser();
-        if (!user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const supabase = createAdminClient();
 
-        // 1. Fetch current order from DB
+        // 1. Fetch current order from DB first
         const { data: order, error: orderError } = await supabase
             .from('orders')
             .select('*')
@@ -44,6 +26,29 @@ export async function POST(req: NextRequest) {
 
         if (orderError || !order) {
             return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+        }
+
+        // 2. Authorization check: If the order belongs to an authenticated user, enforce ownership
+        if (order.user_id) {
+            const cookieStore = await cookies();
+            const supabaseAuth = createServerClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                {
+                    cookies: {
+                        getAll() {
+                            return cookieStore.getAll();
+                        },
+                    },
+                }
+            );
+            const { data: { user } } = await supabaseAuth.auth.getUser();
+            if (!user || user.id !== order.user_id) {
+                return NextResponse.json(
+                    { error: 'Unauthorized: Order ownership mismatch' },
+                    { status: 403 }
+                );
+            }
         }
 
         // Already processed — return current status

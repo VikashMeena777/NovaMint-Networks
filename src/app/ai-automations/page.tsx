@@ -1,455 +1,344 @@
 'use client';
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Bot,
-    Zap,
-    Clock,
-    CheckCircle2,
-    ArrowRight,
-    Sparkles,
-    MessageCircle,
-    Mail,
-    Database,
-    ShoppingCart,
-    CreditCard,
-    RefreshCw,
-    Calendar
+  Bot,
+  Zap,
+  Clock,
+  CheckCircle2,
+  ArrowRight,
+  Sparkles,
+  ShoppingCart,
+  CreditCard,
+  RefreshCw,
+  Calendar,
+  Layers,
+  ShieldCheck,
+  Cpu
 } from 'lucide-react';
-import { ScrollReveal, SlideUp } from '@/components/animations';
-import { Button, Card, Badge, SectionHeading } from '@/components/ui';
-import { useCart } from '@/context/CartContext';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { BookNowModal } from '@/components/booking/BookNowModal';
+import { useCart } from '@/contexts/CartContext';
 import { oneTimeAutomations, subscriptionAutomations } from '@/data/automations';
 import type { OneTimeAutomation, SubscriptionAutomation } from '@/data/automations';
 import { getIcon } from '@/lib/icon-map';
-
+import { toast } from 'sonner';
 
 export default function AIAutomationsPage() {
-    const [activeTab, setActiveTab] = useState<'one-time' | 'subscription'>('one-time');
-    const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-    const { addItem } = useCart();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedService, setSelectedService] = useState('');
+  const [activeTab, setActiveTab] = useState<'one-time' | 'subscription'>('one-time');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const { addItem, setIsOpen } = useCart();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
 
-    const handleBookNow = (serviceName: string) => {
-        setSelectedService(serviceName);
-        setIsModalOpen(true);
-    };
+  const handleBookNow = (serviceName: string) => {
+    setSelectedService(serviceName);
+    setIsModalOpen(true);
+  };
 
-    const handleAddOneTimeToCart = (automation: OneTimeAutomation) => {
-        addItem({
-            id: automation.id,
-            name: automation.name,
-            price: automation.price,
-            originalPrice: automation.originalPrice,
-            type: 'one-time'
-        });
-    };
+  const handleAddOneTimeToCart = (automation: OneTimeAutomation, openDrawer = true) => {
+    addItem({
+      id: automation.id,
+      name: automation.name,
+      price: automation.price,
+      originalPrice: automation.originalPrice,
+      type: 'one-time',
+    });
+    toast.success(`Added "${automation.name}" to cart`);
+    if (openDrawer) setIsOpen(true);
+  };
 
-    const handleAddSubscriptionToCart = (automation: SubscriptionAutomation) => {
-        addItem({
-            id: `${automation.id}-${billingCycle}`,
-            name: automation.name,
-            price: billingCycle === 'monthly' ? automation.monthlyPrice : Math.round(automation.yearlyPrice / 12),
-            type: 'subscription',
-            billingCycle: billingCycle
-        });
-    };
+  const handleAddSubscriptionToCart = (automation: SubscriptionAutomation, openDrawer = true) => {
+    const price = billingCycle === 'monthly' ? automation.monthlyPrice : Math.round(automation.yearlyPrice / 12);
+    addItem({
+      id: `${automation.id}-${billingCycle}`,
+      name: `${automation.name} (${billingCycle === 'monthly' ? 'Monthly' : 'Annual'})`,
+      price,
+      type: 'subscription',
+      billingCycle,
+    });
+    toast.success(`Added "${automation.name}" subscription to cart`);
+    if (openDrawer) setIsOpen(true);
+  };
 
-    return (
-        <>
-            {/* Hero Section */}
-            <section className="relative pt-12 pb-8">
-                <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-bg-card/50" />
-                    <div
-                        className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 rounded-full blur-[50px]"
-                    />
-                </div>
-                <div className="container relative z-10">
-                    <div className="max-w-4xl">
-                        <SlideUp>
-                            <Badge variant="primary" className="mb-4">
-                                <Bot className="w-4 h-4" />
-                                AI-Powered Automations
-                            </Badge>
-                        </SlideUp>
+  return (
+    <div className="min-h-screen bg-[#030407] text-white selection:bg-primary-500/30">
+      {/* Hero Header */}
+      <section className="relative pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden border-b border-white/[0.06]">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-primary-600/10 blur-[130px] pointer-events-none" />
 
-                        <SlideUp delay={0.1}>
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-display">
-                                Automate Your Business with{' '}
-                                <span className="gradient-text">AI Power</span>
-                            </h1>
-                        </SlideUp>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-4">
+            <Bot className="w-3.5 h-3.5 text-accent" />
+            AUTONOMOUS AGENT PIPELINES & WORKFLOWS
+          </div>
 
-                        <SlideUp delay={0.2}>
-                            <p className="text-xl text-muted-foreground max-w-2xl mb-8">
-                                Choose how you want to automate: Get files and configs to set up yourself,
-                                or let us manage everything for you with monthly subscriptions.
-                            </p>
-                        </SlideUp>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Automate Your Entire Content Engine with{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent">
+              AI Agents.
+            </span>
+          </h1>
 
-                        {/* Stats */}
-                        <SlideUp delay={0.3}>
-                            <div className="flex flex-wrap gap-8">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-                                        <Zap className="w-6 h-6 text-primary" />
-                                    </div>
-                                    <div>
-                                        <div className="text-2xl font-bold">500+</div>
-                                        <div className="text-base text-muted-foreground">Automations Deployed</div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-xl bg-mint-green/20 flex items-center justify-center">
-                                        <Clock className="w-6 h-6 text-mint-green" />
-                                    </div>
-                                    <div>
-                                        <div className="text-2xl font-bold">10,000+</div>
-                                        <div className="text-base text-muted-foreground">Hours Saved Monthly</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </SlideUp>
-                    </div>
-                </div>
-            </section>
+          <p className="mt-4 text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
+            Eliminate 85% of editing, repurposing, transcription, and scheduling overhead. 
+            Choose self-hosted one-time blueprints or fully-managed monthly agency retainers.
+          </p>
 
-            {/* Category Tabs - sits lower on load; sticks under navbar on scroll */}
-            <section className="py-4 mt-32 md:mt-40 border-y border-border/50 bg-background sticky top-16 md:top-20 z-30">
-                <div className="container">
-                    <div className="flex flex-wrap justify-center gap-4">
-                        <Button
-                            variant={activeTab === 'one-time' ? 'primary' : 'outline'}
-                            onClick={() => setActiveTab('one-time')}
-                            className="text-base gap-2"
-                        >
-                            <CreditCard className="w-5 h-5" />
-                            One-Time Purchase
-                        </Button>
-                        <Button
-                            variant={activeTab === 'subscription' ? 'primary' : 'outline'}
-                            onClick={() => setActiveTab('subscription')}
-                            className="text-base gap-2"
-                        >
-                            <RefreshCw className="w-5 h-5" />
-                            Monthly Subscription
-                        </Button>
-                    </div>
-                </div>
-            </section>
+          {/* Telemetry Metrics */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 font-mono text-xs text-neutral-400">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-primary-400" />
+              <span className="text-white font-bold">500+</span> Automations Deployed
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-accent" />
+              <span className="text-white font-bold">10,000+</span> Hours Saved Monthly
+            </div>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-white font-bold">100%</span> Private & Secure
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {/* One-Time Purchase Section */}
-            {activeTab === 'one-time' && (
-                <section className="section">
-                    <div className="container">
-                        <ScrollReveal>
-                            <SectionHeading
-                                badge="One-Time Purchase"
-                                title="Buy Once, Set Up Yourself"
-                                description="Get all automation files, configs, step-by-step tutorials, and documentation. You set it up once - we don't maintain or update it. Perfect for DIY enthusiasts."
-                            />
-                        </ScrollReveal>
+      {/* Model Selection Tabs - Clean sticky bar without 160px gap */}
+      <div className="sticky top-16 md:top-20 z-30 bg-[#06070a]/90 backdrop-blur-xl border-b border-white/[0.08] py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-3">
+          <button
+            onClick={() => setActiveTab('one-time')}
+            className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'one-time'
+                ? 'bg-white text-black shadow-lg shadow-white/10'
+                : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]'
+            }`}
+          >
+            <CreditCard className="w-3.5 h-3.5" />
+            <span>One-Time Purchase (DIY Blueprints)</span>
+          </button>
 
-                        <div className="grid md:grid-cols-2 gap-8 mt-12">
-                            {oneTimeAutomations.map((automation, index) => (
-                                <ScrollReveal key={automation.id} delay={index * 0.1}>
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        className="relative"
-                                    >
-                                        <Card className={`h-full p-8 ${automation.popular ? 'border-primary/50 shadow-lg shadow-primary/10' : ''}`}>
-                                            {automation.tag && (
-                                                <Badge variant="primary" className="absolute -top-3 right-6">
-                                                    {automation.tag}
-                                                </Badge>
-                                            )}
+          <button
+            onClick={() => setActiveTab('subscription')}
+            className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'subscription'
+                ? 'bg-white text-black shadow-lg shadow-white/10'
+                : 'bg-white/[0.04] text-neutral-400 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]'
+            }`}
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Fully-Managed Agency Retainers</span>
+          </button>
+        </div>
+      </div>
 
-                                            <div className="flex items-start gap-4 mb-6">
-                                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                                                    {(() => { const Icon = getIcon(automation.icon); return <Icon className="w-7 h-7 text-primary" />; })()}
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-xl font-bold mb-2">{automation.name}</h3>
-                                                    <p className="text-base text-muted-foreground">{automation.description}</p>
-                                                </div>
-                                            </div>
+      {/* Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        {activeTab === 'one-time' ? (
+          <div>
+            <div className="text-center max-w-xl mx-auto mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                Self-Hosted n8n & Python Blueprints
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-400 mt-2">
+                Download ready-to-import JSON nodes, environment templates, and step-by-step video setup guides. You own the code forever.
+              </p>
+            </div>
 
-                                            <div className="space-y-3 mb-6">
-                                                {automation.features.map((feature, i) => (
-                                                    <div key={i} className="flex items-center gap-3">
-                                                        <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                                                        <span className="text-base">{feature}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {oneTimeAutomations.map((automation) => {
+                const IconComponent = getIcon(automation.icon);
 
-                                            <div className="flex items-center gap-3 mb-6">
-                                                <span className="text-3xl font-bold">₹{automation.price.toLocaleString()}</span>
-                                                <span className="text-lg text-muted-foreground line-through">₹{automation.originalPrice.toLocaleString()}</span>
-                                                <Badge variant="secondary" className="ml-2">
-                                                    {Math.round((1 - automation.price / automation.originalPrice) * 100)}% OFF
-                                                </Badge>
-                                            </div>
-
-                                            <div className="flex gap-3">
-                                                <Button variant="outline" className="flex-1 gap-2" onClick={() => handleAddOneTimeToCart(automation)}>
-                                                    <ShoppingCart className="w-5 h-5" />
-                                                    Add to Cart
-                                                </Button>
-                                                <Button className="flex-1" onClick={() => handleAddOneTimeToCart(automation)}>
-                                                    Buy Now
-                                                </Button>
-                                            </div>
-                                        </Card>
-                                    </motion.div>
-                                </ScrollReveal>
-                            ))}
+                return (
+                  <SpotlightCard
+                    key={automation.id}
+                    className="p-6 sm:p-8 flex flex-col justify-between bg-[#08090C]/80 border-white/[0.08]"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-400">
+                          <IconComponent className="w-6 h-6" />
                         </div>
-                    </div>
-                </section>
-            )}
+                        {automation.tag && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-primary-500/15 text-primary-300 border border-primary-500/30">
+                            {automation.tag}
+                          </span>
+                        )}
+                      </div>
 
-            {/* Subscription Section */}
-            {activeTab === 'subscription' && (
-                <section className="section">
-                    <div className="container">
-                        <ScrollReveal>
-                            <SectionHeading
-                                badge="Monthly Subscription"
-                                title="We Handle Everything"
-                                description="Sit back and relax! We host, run, maintain, and update the automations for you. Just pay monthly and focus on growing your page."
-                            />
-                        </ScrollReveal>
+                      <h3 className="text-xl font-bold font-display text-white tracking-tight">
+                        {automation.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-neutral-400 mt-2 leading-relaxed">
+                        {automation.description}
+                      </p>
 
-                        {/* Billing Toggle */}
-                        <div className="flex justify-center mt-8 mb-12">
-                            <div className="inline-flex items-center gap-4 p-2 bg-card rounded-full border border-border">
-                                <button
-                                    onClick={() => setBillingCycle('monthly')}
-                                    className={`px-6 py-3 rounded-full text-base font-medium transition-all ${billingCycle === 'monthly'
-                                        ? 'bg-primary text-white'
-                                        : 'text-muted-foreground hover:text-foreground'
-                                        }`}
-                                >
-                                    Monthly
-                                </button>
-                                <button
-                                    onClick={() => setBillingCycle('yearly')}
-                                    className={`px-6 py-3 rounded-full text-base font-medium transition-all flex items-center gap-2 ${billingCycle === 'yearly'
-                                        ? 'bg-primary text-white'
-                                        : 'text-muted-foreground hover:text-foreground'
-                                        }`}
-                                >
-                                    Yearly
-                                    <Badge variant="secondary" className="text-xs">Save 17%</Badge>
-                                </button>
-                            </div>
+                      <div className="mt-6 flex items-baseline gap-2">
+                        <span className="text-3xl font-extrabold font-mono text-emerald-400">
+                          ₹{automation.price.toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-xs font-mono text-neutral-500 line-through">
+                          ₹{automation.originalPrice.toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-[10px] font-mono text-primary-300 ml-1">
+                          ({Math.round((1 - automation.price / automation.originalPrice) * 100)}% OFF)
+                        </span>
+                      </div>
+
+                      <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2">
+                        <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mb-2">
+                          WHAT IS INCLUDED
                         </div>
-
-                        <div className="grid md:grid-cols-2 gap-8">
-                            {subscriptionAutomations.map((automation, index) => (
-                                <ScrollReveal key={automation.id} delay={index * 0.1}>
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        className="relative"
-                                    >
-                                        <Card className={`h-full p-8 ${automation.popular ? 'border-primary/50 shadow-lg shadow-primary/10' : ''}`}>
-                                            {automation.tag && (
-                                                <Badge variant="primary" className="absolute -top-3 right-6">
-                                                    {automation.tag}
-                                                </Badge>
-                                            )}
-
-                                            <div className="flex items-start gap-4 mb-6">
-                                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                                                    {(() => { const Icon = getIcon(automation.icon); return <Icon className="w-7 h-7 text-primary" />; })()}
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-xl font-bold mb-2">{automation.name}</h3>
-                                                    <p className="text-base text-muted-foreground">{automation.description}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-3 mb-6">
-                                                {automation.features.map((feature, i) => (
-                                                    <div key={i} className="flex items-center gap-3">
-                                                        <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                                                        <span className="text-base">{feature}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <div className="flex items-baseline gap-2 mb-6">
-                                                <span className="text-3xl font-bold">
-                                                    ₹{billingCycle === 'monthly'
-                                                        ? automation.monthlyPrice.toLocaleString()
-                                                        : Math.round(automation.yearlyPrice / 12).toLocaleString()
-                                                    }
-                                                </span>
-                                                <span className="text-base text-muted-foreground">/month</span>
-                                                {billingCycle === 'yearly' && (
-                                                    <span className="text-base text-muted-foreground">
-                                                        (₹{automation.yearlyPrice.toLocaleString()}/year)
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <div className="mt-auto">
-                                                <Button className="w-full gap-2" onClick={() => handleBookNow(automation.name)}>
-                                                    <Calendar className="w-5 h-5" />
-                                                    Book Now
-                                                </Button>
-                                            </div>
-                                        </Card>
-                                    </motion.div>
-                                </ScrollReveal>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* Why Choose Us Section */}
-            <section className="section bg-card/50">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="Why Choose Us"
-                            title="Built for Results"
-                            description="Our automations are designed by experts and battle-tested by hundreds of businesses."
-                        />
-                    </ScrollReveal>
-
-                    <div className="grid md:grid-cols-3 gap-8 mt-12">
-                        {[
-                            {
-                                icon: Zap,
-                                title: 'Easy to Deploy',
-                                description: 'Get started in minutes with our step-by-step setup guides and video tutorials.'
-                            },
-                            {
-                                icon: Clock,
-                                title: 'Save 20+ Hours/Week',
-                                description: 'Automate repetitive tasks and focus on what matters - growing your business.'
-                            },
-                            {
-                                icon: CheckCircle2,
-                                title: 'Proven Results',
-                                description: '500+ businesses trust our automations to run their operations smoothly.'
-                            }
-                        ].map((item, index) => (
-                            <ScrollReveal key={index} delay={index * 0.1}>
-                                <Card className="text-center p-8">
-                                    <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                                        <item.icon className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                                    <p className="text-base text-muted-foreground">{item.description}</p>
-                                </Card>
-                            </ScrollReveal>
+                        {automation.features.map((feat) => (
+                          <div key={feat} className="flex items-center gap-2 text-xs text-neutral-300">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                            <span>{feat}</span>
+                          </div>
                         ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Comparison Section */}
-            <section className="section">
-                <div className="container">
-                    <ScrollReveal>
-                        <SectionHeading
-                            badge="Compare Options"
-                            title="Which Plan is Right for You?"
-                            description="Choose based on your technical skills and time availability."
-                        />
-                    </ScrollReveal>
-
-                    <div className="mt-12 overflow-x-auto">
-                        <ScrollReveal>
-                            <table className="w-full border-collapse">
-                                <thead>
-                                    <tr className="border-b border-border">
-                                        <th className="text-left py-4 px-6 text-lg font-bold">Feature</th>
-                                        <th className="text-center py-4 px-6 text-lg font-bold">
-                                            <div className="flex flex-col items-center gap-2">
-                                                <CreditCard className="w-6 h-6 text-primary" />
-                                                One-Time Purchase
-                                            </div>
-                                        </th>
-                                        <th className="text-center py-4 px-6 text-lg font-bold bg-primary/10 rounded-t-xl">
-                                            <div className="flex flex-col items-center gap-2">
-                                                <RefreshCw className="w-6 h-6 text-primary" />
-                                                Monthly Subscription
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[
-                                        { feature: 'What You Get', oneTime: 'Files, configs, tutorials', monthly: 'Fully managed service' },
-                                        { feature: 'Setup', oneTime: 'You set it up yourself', monthly: 'We do everything for you' },
-                                        { feature: 'Hosting', oneTime: 'You host on your server', monthly: 'We host it for you' },
-                                        { feature: 'Maintenance', oneTime: 'Not included', monthly: 'Included' },
-                                        { feature: 'Updates', oneTime: 'Not included', monthly: 'Regular updates included' },
-                                        { feature: 'Support', oneTime: 'Setup guide only', monthly: 'Priority 24/7 support' },
-                                        { feature: 'Technical Skills Needed', oneTime: 'Basic understanding required', monthly: 'No skills needed' },
-                                        { feature: 'Best For', oneTime: 'DIY enthusiasts, developers', monthly: 'Busy creators, agencies' },
-                                        { feature: 'Payment', oneTime: 'Pay once', monthly: 'Monthly/Yearly billing' },
-                                    ].map((row, index) => (
-                                        <tr key={index} className="border-b border-border/50 hover:bg-card/50 transition-colors">
-                                            <td className="py-4 px-6 text-base font-medium">{row.feature}</td>
-                                            <td className="py-4 px-6 text-center text-base text-muted-foreground">{row.oneTime}</td>
-                                            <td className="py-4 px-6 text-center text-base bg-primary/5">{row.monthly}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </ScrollReveal>
+                      </div>
                     </div>
 
+                    <div className="mt-8 pt-5 border-t border-white/[0.08] flex items-center gap-3">
+                      <button
+                        onClick={() => handleAddOneTimeToCart(automation, false)}
+                        className="flex-1 py-3 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5 text-neutral-400" />
+                        <span>Add to Cart</span>
+                      </button>
 
-                </div>
-            </section>
+                      <button
+                        onClick={() => handleAddOneTimeToCart(automation, true)}
+                        className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-xs shadow-lg shadow-primary-950/60 hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <span>Buy & Download</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </SpotlightCard>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="text-center max-w-xl mx-auto mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                Fully-Managed Enterprise Automations
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-400 mt-2">
+                We build, host, monitor, and maintain your workflows on our cloud servers. Zero technical maintenance for your team.
+              </p>
 
-            {/* CTA Section */}
-            <section className="section">
-                <div className="container">
-                    <ScrollReveal>
-                        <Card glass className="text-center p-8 md:p-12">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                                Need a Custom Automation?
-                            </h2>
-                            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
-                                Don't see what you need? We build custom AI automations tailored to your specific business requirements.
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <Link href="/contact">
-                                    <Button size="lg">
-                                        Request Custom Automation
-                                        <ArrowRight className="w-5 h-5" />
-                                    </Button>
-                                </Link>
-                                <Link href="/portfolio">
-                                    <Button variant="secondary" size="lg">
-                                        View Our Work
-                                    </Button>
-                                </Link>
-                            </div>
-                        </Card>
-                    </ScrollReveal>
-                </div>
-            </section>
+              {/* Billing Cycle Switcher */}
+              <div className="mt-6 inline-flex items-center gap-2 p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                <button
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    billingCycle === 'monthly' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 ${
+                    billingCycle === 'yearly' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <span>Annual Billing</span>
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-400">
+                    SAVE 20%
+                  </span>
+                </button>
+              </div>
+            </div>
 
-            {/* Book Now Modal */}
-            <BookNowModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                serviceName={selectedService}
-            />
-        </>
-    );
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {subscriptionAutomations.map((automation) => {
+                const IconComponent = getIcon(automation.icon);
+                const price = billingCycle === 'monthly' ? automation.monthlyPrice : Math.round(automation.yearlyPrice / 12);
+
+                return (
+                  <SpotlightCard
+                    key={automation.id}
+                    className="p-6 sm:p-8 flex flex-col justify-between bg-[#08090C]/80 border-white/[0.08]"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                          <IconComponent className="w-6 h-6" />
+                        </div>
+                        {automation.popular && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-accent/15 text-accent border border-accent/30">
+                            POPULAR SLA
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="text-xl font-bold font-display text-white tracking-tight">
+                        {automation.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-neutral-400 mt-2 leading-relaxed">
+                        {automation.description}
+                      </p>
+
+                      <div className="mt-6 flex items-baseline gap-1">
+                        <span className="text-3xl font-extrabold font-mono text-white">
+                          ₹{price.toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-xs font-mono text-neutral-400">/ month</span>
+                        {billingCycle === 'yearly' && (
+                          <span className="text-[11px] font-mono text-emerald-400 ml-2">
+                            (Billed ₹{automation.yearlyPrice.toLocaleString('en-IN')}/yr)
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-6 pt-5 border-t border-white/[0.06] space-y-2">
+                        <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mb-2">
+                          MANAGED SLA SERVICES
+                        </div>
+                        {automation.features.map((feat) => (
+                          <div key={feat} className="flex items-center gap-2 text-xs text-neutral-300">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0" />
+                            <span>{feat}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-8 pt-5 border-t border-white/[0.08] flex items-center gap-3">
+                      <button
+                        onClick={() => handleAddSubscriptionToCart(automation, true)}
+                        className="flex-1 py-3 px-4 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-white/10"
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5" />
+                        <span>Subscribe Now</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleBookNow(`Managed Automation: ${automation.name}`)}
+                        className="py-3 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-semibold text-neutral-300 transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>Discuss SLA</span>
+                      </button>
+                    </div>
+                  </SpotlightCard>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <BookNowModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        serviceName={selectedService}
+      />
+    </div>
+  );
 }

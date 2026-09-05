@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import {
@@ -10,16 +10,31 @@ import {
   Star,
   CheckCircle2,
   ChevronRight,
+  Zap,
+  Activity,
+  Cpu,
+  Layers,
+  Share2,
+  TrendingUp,
+  ShieldCheck,
+  Video,
+  Clock,
+  Award,
+  BarChart3,
+  Flame,
+  ArrowUpRight
 } from 'lucide-react';
 import { Button, Badge } from '@/components/ui';
-import { getIcon } from '@/lib/icon-map';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { WorkflowVisualizer } from '@/components/interactive/WorkflowVisualizer';
+import { RoiCalculator } from '@/components/interactive/RoiCalculator';
+import { BookNowModal } from '@/components/booking/BookNowModal';
 import {
   heroStats,
   trustedPlatforms,
   impactStats,
   homeServices,
   whyUsFeatures,
-  whyUsBenefits,
 } from '@/data/homepage';
 import { testimonials } from '@/data/testimonials';
 
@@ -51,595 +66,498 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
     return () => cancelAnimationFrame(animationFrame);
   }, [isInView, value]);
 
-  const fmt = (n: number) => n >= 10000 ? `${(n / 1000).toFixed(0)}K` : n.toLocaleString();
+  const fmt = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(0)}K` : n.toLocaleString());
 
-  return <span ref={ref}>{fmt(count)}{suffix}</span>;
+  return (
+    <span ref={ref} className="font-mono">
+      {fmt(count)}
+      {suffix}
+    </span>
+  );
 }
 
 export default function HomePage() {
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('AI Automation Consultation');
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true });
 
+  const handleOpenBookModal = (serviceName: string) => {
+    setSelectedService(serviceName);
+    setIsBookModalOpen(true);
+  };
+
   return (
-    <>
-      {/* ===== HERO ===== */}
-      <section ref={heroRef} className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Background grid + animated gradient sweep */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-100" />
-        <div className="absolute inset-0 animate-gradient-sweep" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" />
+    <div className="relative overflow-hidden bg-[#030407] text-white selection:bg-primary-500/30 selection:text-white">
+      {/* Ambient background glows */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-primary-600/15 via-accent/5 to-transparent blur-[140px]" />
+      <div className="pointer-events-none absolute top-[30%] -left-64 w-96 h-96 bg-primary-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute top-[60%] -right-64 w-96 h-96 bg-accent/10 blur-[120px]" />
 
-        {/* Floating orbs — multicolor */}
-        <div className="absolute top-1/4 left-[8%] w-72 h-72 md:w-96 md:h-96 rounded-full bg-nova-purple/20 blur-[80px]" />
-        <div className="absolute bottom-1/4 right-[8%] w-64 h-64 md:w-80 md:h-80 rounded-full bg-electric-blue/15 blur-[70px]" />
-        <div className="absolute top-[60%] left-[20%] w-48 h-48 rounded-full bg-coral-accent/10 blur-[60px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full bg-nova-purple/8 blur-[100px]" />
-
-        <div className="container relative pt-20 pb-14 md:pt-24 md:pb-16">
-          <div className="max-w-5xl mx-auto text-center">
-
-            {/* Launch badge */}
+      {/* ===== HERO SECTION ===== */}
+      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Top telemetry pill */}
+          <div className="flex justify-center mb-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5 }}
-              className="mb-6 md:mb-8"
+              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] backdrop-blur-xl text-xs font-mono text-neutral-300 shadow-xl shadow-black/40"
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-sm font-semibold">
-                <Sparkles className="w-3.5 h-3.5" />
-                Trusted by <strong>100+</strong> creators worldwide
-                <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
+              <span>10M+ ORGANIC VIEWS ENGINEERED</span>
+              <span className="text-neutral-600">•</span>
+              <span className="text-primary-400 font-semibold">Q2 COHORT OPEN</span>
             </motion.div>
+          </div>
 
-            {/* Headline */}
+          {/* Massive Display Headline */}
+          <div className="text-center max-w-4xl mx-auto">
             <motion.h1
-              initial={{ opacity: 0, y: 32, filter: 'blur(8px)' }}
-              animate={heroInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+              initial={{ opacity: 0, y: 25 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.08] tracking-tight mb-6 md:mb-8 heading-pro font-syne"
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold font-display tracking-tight text-white leading-[1.05]"
             >
-              Premium Digital{' '}
-              <br className="hidden sm:block" />
-              Services for{' '}
-              <span className="gradient-text">
-                Creators
+              The Autonomous Studio for{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent">
+                High-Output Creators.
               </span>
             </motion.h1>
 
-            {/* Subheadline */}
             <motion.p
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed"
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="mt-6 text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed"
             >
-              AI automation, professional video editing, and content services
-              to supercharge your content empire.
+              We pair elite human cinematic video editors with autonomous multi-agent AI pipelines. 
+              Turn raw recordings into 30+ viral short-form assets, scheduled and distributed across every channel.
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-10 md:mb-14"
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link href="/products">
-                <Button size="lg" className="group w-full sm:w-auto h-13 px-8 text-base rounded-xl">
-                  Explore Products
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link href="/portfolio">
-                <Button variant="secondary" size="lg" className="group w-full sm:w-auto h-13 px-8 text-base rounded-xl">
-                  <Play className="w-4 h-4" />
-                  View Our Work
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto"
-            >
-              {heroStats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={heroInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.45, delay: 0.55 + i * 0.1, type: 'spring', stiffness: 200 }}
-                  className="relative group"
-                >
-                  <div className="card-pro p-4 md:p-5 text-center rounded-2xl hover:shadow-lg transition-shadow duration-300">
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text-mint mb-1 font-mono">
-                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                    </div>
-                    <div className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity }}
-            className="w-6 h-10 rounded-full border-2 border-border/40 flex items-start justify-center p-2"
-          >
-            <motion.div
-              animate={{ opacity: [0, 1, 0], y: [0, 10, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity }}
-              className="w-1 h-2 rounded-full bg-nova-purple"
-            />
-          </motion.div>
-        </motion.div>
-      </section>
-
-
-      {/* ===== TRUSTED BY SECTION ===== */}
-      <section className="py-10 border-y border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden">
-        <div className="container">
-          <p className="text-center text-xs font-bold tracking-widest text-muted-foreground uppercase mb-6">
-            Trusted by creators and brands across India
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 opacity-40">
-            {trustedPlatforms.map((name) => (
-              <span key={name} className="text-sm font-semibold text-foreground">{name}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ===== STATS SECTION ===== */}
-      <StatsSection />
-
-
-      {/* ===== SERVICES SECTION ===== */}
-      <ServicesSection />
-
-
-      {/* ===== WHY US SECTION ===== */}
-      <WhyUsSection />
-
-
-      {/* ===== TESTIMONIAL SECTION ===== */}
-      <TestimonialSection />
-
-
-      {/* ===== CTA SECTION ===== */}
-      <CTASection />
-    </>
-  );
-}
-
-
-function StatsSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  const stats = impactStats;
-
-  return (
-    <section ref={ref} className="relative py-16 md:py-24 overflow-hidden">
-      <div className="absolute inset-0 bg-card/40" />
-      <div className="absolute inset-0 bg-dots-pattern opacity-30" />
-
-      <div className="container relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-mint text-xs font-bold tracking-widest uppercase">
-              Our Impact
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 heading-pro">
-            Numbers That{' '}
-            <span className="gradient-text-mint">Speak Volumes</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Join the growing community of creators who transformed their content game with NovaMint.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.12, type: 'spring', stiffness: 180 }}
-              className="card-pro p-5 md:p-7 text-center group hover:scale-[1.03] transition-transform duration-300"
-            >
-              <div className={`w-12 h-12 md:w-14 md:h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
-                {(() => { const Icon = getIcon(stat.icon); return <Icon className="w-6 h-6 text-white" />; })()}
-              </div>
-              <div className="text-3xl md:text-4xl xl:text-5xl font-bold gradient-text-mint font-mono">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              </div>
-              <div className="font-semibold text-sm md:text-base mt-2 mb-0.5">{stat.label}</div>
-              <div className="text-xs md:text-sm text-muted-foreground">{stat.description}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-
-function ServicesSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  const services = homeServices;
-
-  return (
-    <section ref={ref} className="py-16 md:py-28">
-      <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-coral text-xs font-bold tracking-widest uppercase">
-              What We Offer
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 heading-pro">
-            Everything You Need to{' '}
-            <span className="gradient-text-warm">Scale Your Content</span>
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            From video editing to AI automation — 17+ professional services to help you create, grow, and monetize.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 30, rotateX: 5 }}
-              animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Link href={service.href} className="group block h-full">
-                <div className="card-pro animate-border-glow h-full p-6 md:p-8 rounded-2xl relative overflow-hidden">
-                  {/* Alternating gradient directions */}
-                  <div className={`absolute inset-0 ${index % 2 === 0 ? 'bg-gradient-to-br' : 'bg-gradient-to-tl'} ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-
-                  <div className="relative flex items-start gap-5">
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      {(() => { const Icon = getIcon(service.icon); return <Icon className="w-6 h-6 text-white" />; })()}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg md:text-xl font-bold group-hover:text-coral-accent transition-colors">
-                          {service.title}
-                        </h3>
-                        <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full badge-coral">
-                          {service.tag}
-                        </span>
-                      </div>
-                      <p className="text-muted-foreground text-sm md:text-base mb-4 leading-relaxed">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold gradient-text-coral text-lg">
-                          {service.price}
-                        </span>
-                        <span className="flex items-center gap-1 text-sm text-muted-foreground group-hover:text-coral-accent transition-colors">
-                          Learn more
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-10 md:mt-12"
-        >
-          <Link href="/services">
-            <Button variant="secondary" size="lg" className="group px-8">
-              View All Services
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-
-function WhyUsSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  const features = whyUsFeatures;
-  const benefits = whyUsBenefits;
-
-  return (
-    <section ref={ref} className="relative py-16 md:py-28 overflow-hidden">
-      <div className="absolute inset-0 bg-card/30" />
-      <div className="absolute inset-0 bg-grid-pattern opacity-40" />
-
-      <div className="container relative">
-        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center">
-
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="flex mb-5">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-nova-purple/12 border border-nova-purple/25 text-nova-purple text-xs font-bold tracking-widest uppercase">
-                Why NovaMint
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5 heading-pro">
-              Results That Speak{' '}
-              <span className="gradient-text">Louder Than Words</span>
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              We don't just create content. We build digital empires.
-              Our clients see real, measurable, lasting growth.
-            </p>
-
-            <div className="space-y-4 mb-8">
-              {benefits.map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="flex items-center gap-3.5"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.15 + index * 0.1 }}
-                >
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-nova-purple to-electric-blue flex items-center justify-center flex-shrink-0 shadow-sm shadow-nova-purple/30">
-                    <CheckCircle2 className="w-3 h-3 text-white" />
-                  </div>
-                  <span className="text-sm md:text-base text-foreground/90">{item}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <Link href="/contact">
-              <Button size="lg" className="group px-8 shadow-lg shadow-nova-purple/25">
-                Get Started Today
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Right */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-2 gap-4 md:gap-5"
-          >
-            {features.map((item, index) => (
-              <motion.div
-                key={item.title}
-                whileHover={{ y: -8, scale: 1.03, rotate: index % 2 === 0 ? -1 : 1 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.2 + index * 0.1 }}
-                className="card-pro p-6 md:p-7 text-center rounded-2xl cursor-default"
+              <button
+                onClick={() => handleOpenBookModal('High-Retention Video Editing & AI Growth')}
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-all shadow-xl shadow-white/10 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
-                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                  {(() => { const Icon = getIcon(item.icon); return <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />; })()}
+                <span>Book Strategy Consultation</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <a
+                href="#pipeline-demo"
+                className="w-full sm:w-auto px-7 py-4 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.1] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-xl"
+              >
+                <Cpu className="w-4 h-4 text-primary-400" />
+                <span>Explore AI Workflows</span>
+              </a>
+            </motion.div>
+
+            {/* Trust Signals Under CTAs */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-400 font-mono">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Sub-24 Hour First Cut SLA
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Dedicated Creative Pod
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> 100% IP & Asset Ownership
+              </span>
+            </div>
+          </div>
+
+          {/* Live Studio Preview / Audio Waveform Mockup */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-14 max-w-5xl mx-auto"
+          >
+            <div className="relative rounded-2xl border border-white/[0.12] bg-[#07080C]/90 p-4 sm:p-6 backdrop-blur-2xl shadow-2xl shadow-black/80">
+              {/* Fake DAW / Studio Header */}
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.06] text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                  <span className="ml-3 font-mono text-neutral-400 font-medium hidden sm:inline">
+                    PROJECT: EPISODE_94_MASTER_CUT.NVM
+                  </span>
                 </div>
-                <h4 className="font-bold text-base md:text-lg mb-1">{item.title}</h4>
-                <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+                <div className="flex items-center gap-3 font-mono text-[11px]">
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    AUTOPILOT RENDERING
+                  </span>
+                  <span className="text-neutral-500">4K • 60 FPS • ProRes</span>
+                </div>
+              </div>
+
+              {/* Central Audio Waveform & Clip timeline mockup */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                <div className="md:col-span-8 bg-black/50 rounded-xl p-4 border border-white/[0.04]">
+                  <div className="flex items-center justify-between mb-3 text-[11px] font-mono text-neutral-400">
+                    <span>TRACK 01: AUDIO TRANSCRIBED & HOOKS EXTRACTED</span>
+                    <span className="text-primary-400 font-bold">VIRAL SCORE: 98/100</span>
+                  </div>
+
+                  {/* Simulated Waveform Bars */}
+                  <div className="h-14 flex items-center gap-1 overflow-hidden">
+                    {[40, 65, 30, 85, 95, 45, 60, 80, 100, 75, 45, 90, 85, 35, 70, 95, 60, 40, 85, 100, 70, 50, 90, 65, 45, 80, 95, 70, 40, 60, 90, 100, 80, 50, 75, 95, 60, 45, 85, 90, 65, 40, 70, 95, 80, 60].map((h, i) => (
+                      <div
+                        key={i}
+                        className={`flex-1 rounded-full transition-all duration-300 ${
+                          i > 15 && i < 30
+                            ? 'bg-gradient-to-t from-primary-600 to-accent'
+                            : 'bg-white/15'
+                        }`}
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Subtitle Telemetry Pill */}
+                  <div className="mt-3 flex items-center justify-between text-xs font-mono bg-white/[0.03] p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-neutral-300">
+                      &quot;The #1 mistake 99% of creators make when scripting short-form...&quot;
+                    </span>
+                    <span className="text-accent text-[10px] uppercase font-bold shrink-0 ml-2">
+                      HOOK PINPOINTED (00:02.40)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="md:col-span-4 space-y-3">
+                  <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div className="text-[11px] font-mono text-neutral-400">TURNAROUND LATENCY</div>
+                    <div className="text-xl font-bold font-display text-white mt-0.5">18h 42m</div>
+                    <div className="text-[10px] text-emerald-400 font-mono">5h 18m ahead of SLA</div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div className="text-[11px] font-mono text-neutral-400">REPURPOSED VARIANTS</div>
+                    <div className="text-xl font-bold font-display text-white mt-0.5">14 Shorts & Reels</div>
+                    <div className="text-[10px] text-primary-400 font-mono">Queued for automated publish</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-
-function TestimonialSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  const homeTestimonials = testimonials.filter((t) => t.featured || t.id <= 3).slice(0, 3);
-
-  return (
-    <section ref={ref} className="py-16 md:py-28">
-      <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <div className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full badge-rose text-xs font-bold tracking-widest uppercase">
-              Testimonials
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 heading-pro">
-            Loved by{' '}
-            <span className="gradient-text-warm">Creators Everywhere</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Don&apos;t just take our word for it — hear from the creators we&apos;ve helped scale.
+      {/* ===== SOCIAL PROOF LOGO MARQUEE ===== */}
+      <section className="py-12 border-y border-white/[0.06] bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs font-mono font-bold uppercase tracking-widest text-neutral-400 mb-6">
+            ENGINEERING ATTENTION FOR ELITE CREATORS ACROSS MAJOR PLATFORMS
           </p>
-        </motion.div>
 
-        {/* Featured testimonial layout: large center + smaller sides */}
-        <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-10 md:mb-12 items-stretch">
-          {homeTestimonials.map((t, index) => {
-            const initials = t.name.split(' ').map((w) => w[0]).join('');
-            const isFeatured = index === 0;
-            // Directional entrance: left slides from left, center from bottom, right from right
-            const directionInitial = index === 0 ? { x: -30, opacity: 0 } : index === 2 ? { x: 30, opacity: 0 } : { y: 30, opacity: 0 };
-            const directionAnimate = index === 0 ? { x: 0, opacity: 1 } : index === 2 ? { x: 0, opacity: 1 } : { y: 0, opacity: 1 };
-            return (
-            <motion.div
-              key={t.name}
-              initial={directionInitial}
-              animate={isInView ? directionAnimate : {}}
-              transition={{ duration: 0.5, delay: index * 0.12 }}
-              className={`card-pro rounded-2xl flex flex-col relative overflow-hidden quote-mark ${
-                isFeatured ? 'p-7 md:p-9 md:row-span-1 ring-1 ring-rose-accent/20' : 'p-6 md:p-7'
-              }`}
-            >
-              <div className="flex gap-1 mb-4">
-                {[...Array(t.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-rose-gold text-rose-accent" />
-                ))}
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14 opacity-70">
+            {trustedPlatforms.map((platform) => (
+              <div key={platform} className="flex items-center gap-2 text-sm font-semibold text-neutral-400 hover:text-white transition-colors">
+                <span className="font-display tracking-tight text-base text-neutral-200">{platform}</span>
+                <span className="text-[10px] font-mono text-primary-400">●</span>
               </div>
-              <blockquote className={`text-foreground/85 leading-relaxed mb-5 flex-1 ${
-                isFeatured ? 'text-base md:text-lg' : 'text-sm md:text-base'
-              }`}>
-                &quot;{t.content}&quot;
-              </blockquote>
-              <div className="flex items-center gap-3 pt-4 border-t border-border/40">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-accent to-coral-accent flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                  {initials}
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">{t.name}</div>
-                  <div className="text-muted-foreground text-xs">{t.role} • {t.company}</div>
-                </div>
-              </div>
-            </motion.div>
-            );
-          })}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center"
-        >
-          <Link href="/testimonials">
-            <Button variant="secondary" size="lg" className="group px-8">
-              Read More Stories
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-
-function CTASection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  return (
-    <section ref={ref} className="py-16 md:py-24">
-      <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-2xl md:rounded-3xl"
-        >
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-nova-purple via-[hsl(240,70%,55%)] to-electric-blue" />
-          <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.15),transparent_55%)]" />
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-electric-blue/30 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-nova-purple/40 blur-3xl" />
-
-          <div className="relative z-10 p-10 md:p-16 lg:p-20 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-white text-xs font-bold tracking-widest uppercase mb-6"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              Ready to Scale?
-            </motion.div>
-
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-5 heading-pro">
-              Let's Build Your
-              <br />
-              Content Empire
-            </h2>
-            <p className="text-white/75 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-              Join 100+ creators who trusted NovaMint to transform their content.
-              Your growth story starts here.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  className="!bg-none !bg-white/20 !text-white hover:!bg-white/30 !border !border-white/30 px-8 font-bold text-base rounded-xl !shadow-none hover:shadow-xl backdrop-blur-sm"
-                >
-                  Get Started Today
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link href="/services">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="!border-white/40 !text-white hover:!bg-white/10 hover:!border-white/60 px-8 text-base !shadow-none"
-                >
-                  Explore Services
-                </Button>
-              </Link>
-            </div>
-
-            {/* Trust signals */}
-            <div className="flex items-center justify-center gap-6 mt-10 text-white/55 text-xs">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                No contracts
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Unlimited revisions
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                24h response time
-              </span>
-            </div>
+            ))}
           </div>
-        </motion.div>
+        </div>
+      </section>
+
+      {/* ===== 4-COLUMN ASYMMETRIC BENTO GRID ===== */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-3">
+              <Layers className="w-3.5 h-3.5 text-accent" />
+              THE NOVAMINT INFRASTRUCTURE
+            </div>
+            <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tight text-white">
+              Engineered for Maximum Virality & Zero Creator Burnout.
+            </h2>
+            <p className="text-sm md:text-base text-neutral-400 mt-3">
+              We replaced traditional, slow video agencies with a high-throughput content refinery.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {/* Bento Card 1: 9:16 Video Mastery (Col 7) */}
+            <SpotlightCard className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-primary-500/15 border border-primary-500/30 flex items-center justify-center text-primary-400 mb-4">
+                  <Video className="w-5 h-5" />
+                </div>
+                <div className="text-xs font-mono uppercase text-primary-400 font-bold tracking-wider">
+                  CINEMATIC RETENTION EDITING
+                </div>
+                <h3 className="text-2xl font-bold font-display text-white mt-1">
+                  High-Retention Short Form (Reels & Shorts)
+                </h3>
+                <p className="text-sm text-neutral-400 mt-2 leading-relaxed">
+                  Every video is engineered with custom motion graphics, sound design, punch-ins, and pacing calibrated to beat the algorithmic 3-second hook drop-off.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                <span className="text-neutral-400">Turnaround SLA: &lt; 24 Hours</span>
+                <span className="text-emerald-400 font-semibold">94.2% Completion Rate</span>
+              </div>
+            </SpotlightCard>
+
+            {/* Bento Card 2: Autonomous Multi-Agent n8n (Col 5) */}
+            <SpotlightCard className="md:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent mb-4">
+                  <Cpu className="w-5 h-5" />
+                </div>
+                <div className="text-xs font-mono uppercase text-accent font-bold tracking-wider">
+                  PROPRIETARY N8N ENGINE
+                </div>
+                <h3 className="text-2xl font-bold font-display text-white mt-1">
+                  Autonomous Multi-Agent AI Pipelines
+                </h3>
+                <p className="text-sm text-neutral-400 mt-2 leading-relaxed">
+                  Custom-built agent networks that automatically pull long-form podcasts, transcribe audio, pinpoint viral hooks, and generate optimized titles and thumbnails.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                <span className="text-neutral-400">Human Hours Saved: 85%</span>
+                <span className="text-primary-400 font-semibold">0 Manual Ingests</span>
+              </div>
+            </SpotlightCard>
+
+            {/* Bento Card 3: Omnichannel Distribution (Col 5) */}
+            <SpotlightCard className="md:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+                  <Share2 className="w-5 h-5" />
+                </div>
+                <div className="text-xs font-mono uppercase text-emerald-400 font-bold tracking-wider">
+                  ZERO-TOUCH PUBLISHING
+                </div>
+                <h3 className="text-2xl font-bold font-display text-white mt-1">
+                  Omnichannel Auto-Distribution
+                </h3>
+                <p className="text-sm text-neutral-400 mt-2 leading-relaxed">
+                  Direct API integrations schedule and publish to Instagram Reels, YouTube Shorts, TikTok, and LinkedIn with native hashtag and SEO caption optimization.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                <span className="text-neutral-400">Platforms: 4 Simultaneous</span>
+                <span className="text-emerald-400 font-semibold">Peak-Window Sync</span>
+              </div>
+            </SpotlightCard>
+
+            {/* Bento Card 4: Retention Telemetry & Analytics (Col 7) */}
+            <SpotlightCard className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+                  <BarChart3 className="w-5 h-5" />
+                </div>
+                <div className="text-xs font-mono uppercase text-purple-400 font-bold tracking-wider">
+                  REAL-TIME INTELLIGENCE
+                </div>
+                <h3 className="text-2xl font-bold font-display text-white mt-1">
+                  Algorithmic Heatmaps & Retention Analytics
+                </h3>
+                <p className="text-sm text-neutral-400 mt-2 leading-relaxed">
+                  We monitor second-by-second drop-off graphs across all posted assets, continuously feeding performance data back into our creative scripting pods.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                <span className="text-neutral-400">Weekly Audit Reports</span>
+                <span className="text-accent font-semibold">+340% Avg Watch Time</span>
+              </div>
+            </SpotlightCard>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== INTERACTIVE WORKFLOW PIPELINE DEMO ===== */}
+      <section id="pipeline-demo" className="py-20 md:py-28 border-t border-white/[0.06] bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <WorkflowVisualizer />
+        </div>
+      </section>
+
+      {/* ===== INTERACTIVE ROI / VALUE CALCULATOR ===== */}
+      <section className="py-20 md:py-28 border-t border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <RoiCalculator />
+        </div>
+      </section>
+
+      {/* ===== AGENCY SERVICES PREVIEW ===== */}
+      <section className="py-20 md:py-28 border-t border-white/[0.06] bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-12">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-2">
+                <Flame className="w-3.5 h-3.5 text-primary-400" />
+                SPECIALIZED CREATIVE TRACKS
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold font-display text-white">
+                Done-For-You Production & AI Systems
+              </h2>
+            </div>
+
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-primary-400 hover:text-white transition-colors"
+            >
+              <span>VIEW ALL SERVICES & SCOPES</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {homeServices.map((service) => (
+              <SpotlightCard key={service.title} className="p-6 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-primary-400">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider bg-primary-500/15 text-primary-300 border border-primary-500/25">
+                      {service.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold font-display text-white">{service.title}</h3>
+                  <p className="text-xs text-neutral-400 mt-2 leading-relaxed">{service.description}</p>
+                  <div className="mt-4 font-mono text-sm font-bold text-emerald-400">
+                    Starts at {service.price}
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/[0.08]">
+                  <button
+                    onClick={() => handleOpenBookModal(service.title)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-white/[0.05] hover:bg-primary-600 hover:text-white border border-white/[0.1] text-xs font-semibold text-neutral-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Consult on {service.title}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </SpotlightCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CLIENT TESTIMONIALS & RESULTS ===== */}
+      <section className="py-20 md:py-28 border-t border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-400 mb-3">
+              <Award className="w-3.5 h-3.5" />
+              VERIFIED CREATOR SUCCESS
+            </div>
+            <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tight text-white">
+              Trusted by Ambitious Creators.
+            </h2>
+            <p className="text-sm md:text-base text-neutral-400 mt-2">
+              Real creators scaling their audience, output, and sponsorship revenue with NovaMint.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.slice(0, 3).map((item) => (
+              <SpotlightCard key={item.name} className="p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1 text-amber-400 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed italic">
+                    &quot;{item.content}&quot;
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/[0.08] flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center font-bold text-xs text-white">
+                    {item.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-white">{item.name}</div>
+                    <div className="text-[11px] text-neutral-400">{item.role}</div>
+                  </div>
+                </div>
+              </SpotlightCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FINAL HIGH-IMPACT AGENCY CALLOUT ===== */}
+      <section className="py-20 md:py-28 border-t border-white/[0.08] bg-gradient-to-b from-[#08090C] to-[#030407] relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-xs font-mono text-primary-300 mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            READY TO SCALE WITHOUT BURNOUT?
+          </div>
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Let’s Build Your Autonomous Content Studio.
+          </h2>
+          <p className="text-sm md:text-base text-neutral-400 mt-4 max-w-xl mx-auto">
+            Book a complimentary 30-minute architecture session with our lead engineer. We’ll audit your existing channels and design your custom automation blueprint.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={() => handleOpenBookModal('Custom Content Studio Architecture')}
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-all shadow-2xl shadow-white/20 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Schedule Architecture Call</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <Link
+              href="/pricing"
+              className="w-full sm:w-auto px-7 py-4 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.1] text-white font-semibold text-sm transition-all"
+            >
+              Review Retainer Packages
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Floating Strategy Call Pill (Bottom Right) */}
+      <div className="fixed bottom-6 right-6 z-40 hidden sm:block">
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => handleOpenBookModal('Quick Inbound Strategy Consultation')}
+          className="px-4 py-2.5 rounded-full bg-[#090A0F] border border-white/[0.15] text-white text-xs font-semibold shadow-2xl shadow-black/80 flex items-center gap-2 backdrop-blur-xl hover:border-primary-500/50 transition-all cursor-pointer"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span>Book Strategy Call</span>
+          <ArrowUpRight className="w-3.5 h-3.5 text-primary-400" />
+        </motion.button>
       </div>
-    </section>
+
+      <BookNowModal
+        isOpen={isBookModalOpen}
+        onClose={() => setIsBookModalOpen(false)}
+        serviceName={selectedService}
+      />
+    </div>
   );
 }

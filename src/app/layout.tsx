@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Outfit, Inter, JetBrains_Mono, Syne } from "next/font/google";
+import { Outfit, Inter, JetBrains_Mono, Syne, Plus_Jakarta_Sans } from "next/font/google";
 import { Header, Footer } from "@/components/layout";
 import { DynamicBackground } from "@/components/animations";
-import { CartProvider } from "@/context/CartContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const outfit = Outfit({
   variable: "--font-outfit",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -32,6 +39,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://novamintnetworks.in'),
   title: {
     default: "NovaMint Networks | AI Automation & Content Creation Agency",
     template: "%s | NovaMint Networks",
@@ -102,7 +110,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${outfit.variable} ${inter.variable} ${jetbrainsMono.variable} ${syne.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable} ${syne.variable} font-sans antialiased`}
       >
         <AuthProvider>
           <CartProvider>
@@ -113,6 +121,7 @@ export default function RootLayout({
             <main className="min-h-screen pt-16 md:pt-20">{children}</main>
             <Footer />
             <CartDrawer />
+            <Toaster theme="dark" position="top-right" richColors />
           </CartProvider>
         </AuthProvider>
       </body>
