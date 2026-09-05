@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Lock, Eye, EyeOff, Loader2, CheckCircle2, KeyRound, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Lock, Eye, EyeOff, Loader2, CheckCircle2, KeyRound, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -16,40 +16,58 @@ function ResetPasswordForm() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [verifyingSession, setVerifyingSession] = useState(true);
     const [hasSession, setHasSession] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
 
     useEffect(() => {
+        let mounted = true;
         const supabase = getSupabaseClient();
 
-        // 1. Check if PKCE code parameter exists in URL and exchange it
+        // 1. If code exists in query params (direct arrival), exchange it immediately
         const code = searchParams.get('code');
         if (code) {
             supabase.auth.exchangeCodeForSession(code).then((res: any) => {
-                if (res.error) {
-                    console.error('Session exchange error:', res.error);
-                } else if (res.data?.session) {
-                    setHasSession(true);
+                if (mounted) {
+                    if (res.data?.session) {
+                        setHasSession(true);
+                        setVerifyingSession(false);
+                    }
                 }
             });
         }
 
-        // 2. Check if active session or recovery session already exists
+        // 2. Check current session (from cookie or browser storage)
         supabase.auth.getSession().then((res: any) => {
-            if (res.data?.session) {
-                setHasSession(true);
+            if (mounted) {
+                if (res.data?.session) {
+                    setHasSession(true);
+                    setVerifyingSession(false);
+                }
             }
         });
 
-        // 3. Listen for auth state transitions (PASSWORD_RECOVERY event)
+        // 3. Listen to auth state transitions (PASSWORD_RECOVERY or TOKEN_REFRESHED)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: any) => {
-            if (event === 'PASSWORD_RECOVERY' || session) {
-                setHasSession(true);
+            if (mounted) {
+                if (event === 'PASSWORD_RECOVERY' || session) {
+                    setHasSession(true);
+                    setVerifyingSession(false);
+                }
             }
         });
+
+        // 4. Verification timeout safeguard (2.5 seconds)
+        const timer = setTimeout(() => {
+            if (mounted) {
+                setVerifyingSession(false);
+            }
+        }, 2500);
 
         return () => {
+            mounted = false;
+            clearTimeout(timer);
             subscription.unsubscribe();
         };
     }, [searchParams]);
@@ -71,25 +89,53 @@ function ResetPasswordForm() {
         const supabase = getSupabaseClient();
 
         try {
-            const { error } = await supabase.auth.updateUser({
-                password: password,
+            const { data: { session } } = await supabase.auth.getSession();
+
+            // Call dedicated server endpoint that handles both SSR session & Admin API fallback for OAuth accounts
+            const response = await fetch('/api/auth/update-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+                },
+                body: JSON.stringify({ password }),
             });
 
-            if (error) {
-                toast.error(error.message || 'Failed to update password');
-            } else {
-                setIsSuccess(true);
-                toast.success('Your password has been successfully updated!');
-                setTimeout(() => {
-                    router.push('/login');
-                }, 2000);
+            const result = await response.json();
+
+            if (!response.ok || result.error) {
+                // Fallback attempt: client-side updateUser
+                const { error: clientError } = await supabase.auth.updateUser({
+                    password,
+                });
+
+                if (clientError) {
+                    throw new Error(result.error || clientError.message || 'Failed to update credentials.');
+                }
             }
-        } catch {
-            toast.error('An unexpected error occurred while resetting your password');
+
+            setIsSuccess(true);
+            toast.success('Your password has been successfully updated! You can now log in.');
+            setTimeout(() => {
+                router.push('/login');
+            }, 2000);
+        } catch (err: any) {
+            console.error('Password reset error:', err);
+            toast.error(err.message || 'Failed to reset password. Please request a fresh reset link.');
         } finally {
             setLoading(false);
         }
     };
+
+    if (verifyingSession) {
+        return (
+            <SpotlightCard className="p-8 sm:p-10 bg-[#08090C]/90 border-white/[0.08] shadow-2xl flex flex-col items-center justify-center min-h-[300px] text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary-400 mb-4" />
+                <p className="text-sm font-semibold text-white mb-1">Verifying Recovery Link...</p>
+                <p className="text-xs text-neutral-400">Authenticating secure cryptographic session tokens</p>
+            </SpotlightCard>
+        );
+    }
 
     if (isSuccess) {
         return (
@@ -99,7 +145,7 @@ function ResetPasswordForm() {
                 </div>
                 <h2 className="text-2xl font-bold font-display text-white mb-2">Password Updated</h2>
                 <p className="text-xs text-neutral-400 mb-6 leading-relaxed">
-                    Your account security credentials have been successfully refreshed. Redirecting you to sign in...
+                    Your account password has been updated. You can now use this password with your email to sign in anytime.
                 </p>
                 <Link href="/login">
                     <button
@@ -119,15 +165,35 @@ function ResetPasswordForm() {
             <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-[10px] font-mono text-primary-300 uppercase tracking-widest mb-3">
                     <KeyRound className="w-3 h-3" />
-                    <span>Credential Reset</span>
+                    <span>Credential Security</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-black font-display text-white tracking-tight mb-2">
                     Set New Password
                 </h1>
                 <p className="text-xs text-neutral-400">
-                    Create a strong, unique password for your NovaMint Networks account.
+                    Create a strong password to enable email & password sign-in for your account.
                 </p>
             </div>
+
+            {!hasSession && (
+                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-3">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <div>
+                        <span className="font-semibold block mb-0.5">Session Not Detected</span>
+                        <span>
+                            If you opened this page directly, you need to click the password reset link sent to your email to establish an active recovery session.
+                        </span>
+                        <div className="mt-2.5">
+                            <Link
+                                href="/forgot-password"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-xs font-mono transition-colors"
+                            >
+                                Request Fresh Reset Link →
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

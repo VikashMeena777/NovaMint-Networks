@@ -14,6 +14,7 @@ function LoginForm() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isInvalidCreds, setIsInvalidCreds] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
     const { signIn, signInWithGoogle } = useAuth();
     const router = useRouter();
@@ -23,11 +24,17 @@ function LoginForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setIsInvalidCreds(false);
 
         try {
             const { error } = await signIn(email, password);
             if (error) {
-                toast.error(error.message);
+                if (error.message?.toLowerCase().includes('invalid login credentials')) {
+                    setIsInvalidCreds(true);
+                    toast.error('Invalid credentials. If you signed in with Google, you can continue with Google or set a password.');
+                } else {
+                    toast.error(error.message);
+                }
             } else {
                 toast.success('Authenticated successfully');
                 router.push(redirectTo);
@@ -68,6 +75,38 @@ function LoginForm() {
                 </p>
             </div>
 
+            {isInvalidCreds && (
+                <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-5 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 space-y-2.5"
+                >
+                    <div className="flex items-center gap-2 font-semibold text-white">
+                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>Signed in with Google previously?</span>
+                    </div>
+                    <p className="text-[11px] text-neutral-300 leading-relaxed">
+                        If you originally signed in with Google, you don't have an email password yet. You can sign in with Google or create an email password.
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                        <button
+                            type="button"
+                            onClick={handleGoogleSignIn}
+                            disabled={googleLoading}
+                            className="px-3 py-1.5 rounded-lg bg-white text-black font-bold text-xs hover:bg-neutral-200 transition-all text-center cursor-pointer shadow-sm disabled:opacity-50"
+                        >
+                            Continue with Google
+                        </button>
+                        <Link
+                            href={`/forgot-password?email=${encodeURIComponent(email)}`}
+                            className="px-3 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.1] text-white text-xs font-mono text-center transition-all cursor-pointer"
+                        >
+                            Set Account Password →
+                        </Link>
+                    </div>
+                </motion.div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-2">
@@ -91,7 +130,7 @@ function LoginForm() {
                         <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400">
                             Password
                         </label>
-                        <Link href="/forgot-password" className="text-[11px] text-primary-400 hover:text-primary-300 transition-colors">
+                        <Link href={email ? `/forgot-password?email=${encodeURIComponent(email)}` : '/forgot-password'} className="text-[11px] text-primary-400 hover:text-primary-300 transition-colors">
                             Forgot password?
                         </Link>
                     </div>
@@ -108,7 +147,7 @@ function LoginForm() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 transition-colors cursor-pointer"
                         >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -127,7 +166,7 @@ function LoginForm() {
                         </>
                     ) : (
                         <>
-                            <span>Sign In to Portal</span>
+                            <span>Sign In to Workspace</span>
                             <ArrowRight className="w-4 h-4" />
                         </>
                     )}
@@ -165,9 +204,9 @@ function LoginForm() {
             </button>
 
             <div className="mt-6 text-center text-xs text-neutral-400">
-                Don't have an account yet?{' '}
+                Don't have an account?{' '}
                 <Link href="/register" className="text-primary-400 hover:text-primary-300 font-semibold underline">
-                    Create one
+                    Sign up
                 </Link>
             </div>
         </SpotlightCard>
@@ -184,9 +223,9 @@ export default function LoginPage() {
             >
                 <Suspense
                     fallback={
-                        <div className="min-h-[400px] flex items-center justify-center">
+                        <SpotlightCard className="p-8 sm:p-10 bg-[#08090C]/90 border-white/[0.08] shadow-2xl flex items-center justify-center min-h-[300px]">
                             <Loader2 className="w-8 h-8 animate-spin text-primary-400" />
-                        </div>
+                        </SpotlightCard>
                     }
                 >
                     <LoginForm />
