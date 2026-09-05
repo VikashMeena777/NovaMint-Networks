@@ -98,6 +98,13 @@ export async function GET(request: Request) {
 
         const isInterstate = taxMode === 'inter';
 
+        // Company & Tax Identity Configuration (can be overridden via env vars or modified here)
+        const companyGstin = process.env.COMPANY_GSTIN || process.env.NEXT_PUBLIC_COMPANY_GSTIN || '07AABCN1234M1Z5';
+        const companyCin = process.env.COMPANY_CIN || process.env.NEXT_PUBLIC_COMPANY_CIN || 'U72900DL2025PTC418920';
+        const companyLegalName = process.env.COMPANY_LEGAL_NAME || 'NovaMint Networks Private Limited / NovaMint Studios';
+        const companyAddress = process.env.COMPANY_ADDRESS || 'Level 5, Cyber Tech Park, DLF Cyber City, Sector 24, Gurugram / New Delhi, 122002';
+        const companyBillingEmail = process.env.COMPANY_BILLING_EMAIL || 'billing@novamint.in';
+
         const createdYear = order.created_at
             ? String(order.created_at).slice(0, 4)
             : new Date().getFullYear().toString();
@@ -603,13 +610,13 @@ export async function GET(request: Request) {
         <div class="invoice-header">
             <div>
                 <div class="brand-logo">NovaMint <span>Networks</span></div>
-                <div class="brand-sub">NovaMint Networks Private Limited / NovaMint Studios</div>
+                <div class="brand-sub">${companyLegalName}</div>
                 <div class="company-details">
-                    <strong>Corporate Identification:</strong> U72900DL2025PTC418920<br>
-                    <strong>GSTIN:</strong> 07AABCN1234M1Z5<br>
+                    <strong>Corporate Identification:</strong> ${companyCin}<br>
+                    <strong>GSTIN:</strong> ${companyGstin}<br>
                     <strong>Tax Regime:</strong> Indian Goods and Services Tax (GST)<br>
-                    <strong>Principal Place of Business:</strong> Level 5, Cyber Tech Park, DLF Cyber City, Sector 24, Gurugram / New Delhi, 122002<br>
-                    <strong>Contact / Support:</strong> billing@novamint.in · www.novamint.in
+                    <strong>Principal Place of Business:</strong> ${companyAddress}<br>
+                    <strong>Contact / Support:</strong> ${companyBillingEmail} · www.novamint.in
                 </div>
             </div>
             <div class="invoice-title-block">
@@ -732,13 +739,13 @@ export async function GET(request: Request) {
                     <span style="font-family: 'Brush Script MT', cursive, sans-serif; font-size: 22px; color: #5b21b6; font-weight: bold;">NovaMint Networks</span>
                 </div>
                 <div class="signature-title">Authorized Signatory</div>
-                <div class="signature-subtitle">NovaMint Networks Private Limited</div>
+                <div class="signature-subtitle">${companyLegalName}</div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="invoice-footer">
-            This is a computer-generated tax invoice issued in terms of Section 31 of the CGST Act, 2017. It has been digitally authenticated and requires no physical ink signature. For any clarification regarding SAC Code 998313 or input tax credits, please contact our accounts bureau at <a href="mailto:billing@novamint.in" style="color: #7c3aed; text-decoration: none;">billing@novamint.in</a>.
+            This is a computer-generated tax invoice issued in terms of Section 31 of the CGST Act, 2017. It has been digitally authenticated and requires no physical ink signature. For any clarification regarding SAC Code 998313 or input tax credits, please contact our accounts bureau at <a href="mailto:${companyBillingEmail}" style="color: #7c3aed; text-decoration: none;">${companyBillingEmail}</a>.
         </div>
 
     </div>

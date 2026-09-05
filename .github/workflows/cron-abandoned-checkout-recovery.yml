@@ -1,0 +1,61 @@
+﻿name: Cron - Abandoned Checkout Recovery
+
+on:
+  schedule:
+    # Run every 30 minutes to recover abandoned checkouts
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Allow manual trigger via GitHub Actions tab
+
+jobs:
+  recover-checkouts:
+    name: Recover Abandoned Checkouts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Recovery API Endpoint
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "::error::APP_URL secret is missing! Please add APP_URL (e.g. https://yourdomain.com) to your GitHub Repository Secrets."
+            exit 1
+          fi
+
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret is missing! Please add CRON_SECRET to your GitHub Repository Secrets."
+            exit 1
+          fi
+
+          # Strip trailing slash if present
+          CLEAN_APP_URL="${APP_URL%/}"
+          TARGET_URL="${CLEAN_APP_URL}/api/cron/recover-abandoned-checkouts"
+
+          echo "🚀 Dispatching abandoned checkout recovery cron..."
+          echo "📡 Target: $TARGET_URL"
+
+          # Execute curl request with Bearer authentication
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X GET "$TARGET_URL" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -H "Content-Type: application/json" \
+            -H "User-Agent: NovaMint-GitHub-Cron/1.0")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "📊 Response HTTP Code: $HTTP_CODE"
+          echo "📦 Response Payload: $BODY"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Recovery cycle executed successfully!"
+          else
+            echo "::error::Recovery cron failed with HTTP status $HTTP_CODE: $BODY"
+            exit 1
+          fi
+
+      - name: Workflow Summary
+        if: always()
+        run: |
+          echo "================================================="
+          echo "🏁 Checkout recovery run finished at $(date -u)"
+          echo "================================================="
