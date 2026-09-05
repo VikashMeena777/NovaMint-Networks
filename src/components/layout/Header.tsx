@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, ShoppingCart, User as UserIcon, Zap, ArrowUpRight, Sparkles } from 'lucide-react';
@@ -58,18 +59,25 @@ export function Header() {
           )}
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
             <motion.div
-              className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 via-primary-600 to-accent flex items-center justify-center shadow-lg shadow-primary-950/50"
-              whileHover={{ scale: 1.06, rotate: 4 }}
+              className="w-10 h-10 rounded-xl overflow-hidden border border-white/15 bg-black/60 shadow-lg shadow-primary-950/40 flex items-center justify-center shrink-0"
+              whileHover={{ scale: 1.08, rotate: 2 }}
               whileTap={{ scale: 0.94 }}
             >
-              <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
+              <Image
+                src="/images/novamint-logo.jpg"
+                alt="NovaMint Networks Logo"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+                priority
+              />
             </motion.div>
             <div className="flex items-baseline tracking-tight">
               <span className="font-display font-extrabold text-xl text-white">Nova</span>
               <span className="font-display font-extrabold text-xl text-primary-400">Mint</span>
-              <span className="ml-1.5 hidden md:inline-block text-[10px] font-mono uppercase tracking-widest text-neutral-500 border border-white/[0.08] px-1.5 py-0.5 rounded-md">
+              <span className="ml-1.5 hidden md:inline-block text-[10px] font-mono uppercase tracking-widest text-neutral-400 border border-white/[0.1] px-1.5 py-0.5 rounded-md bg-white/[0.03]">
                 NETWORKS
               </span>
             </div>

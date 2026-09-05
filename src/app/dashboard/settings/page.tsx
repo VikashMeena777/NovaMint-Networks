@@ -70,42 +70,52 @@ export default function SettingsPage() {
 
                     <div className="space-y-5">
                         <div className="flex items-center justify-between gap-4">
-                            <div>
+                            <div className="pr-2">
                                 <p className="text-xs font-semibold text-white">Order Confirmations & Invoices</p>
-                                <p className="text-[11px] text-neutral-400">
+                                <p className="text-[11px] text-neutral-400 mt-0.5">
                                     Instant delivery URLs and GST receipts sent to {user?.email}
                                 </p>
                             </div>
                             <button
+                                type="button"
+                                role="switch"
+                                aria-checked={emailNotifications}
                                 onClick={handleToggleNotifications}
-                                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-                                    emailNotifications ? 'bg-primary-600' : 'bg-white/[0.1]'
+                                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500/50 ${
+                                    emailNotifications ? 'bg-primary-600 shadow-sm shadow-primary-500/40' : 'bg-neutral-800'
                                 }`}
                             >
+                                <span className="sr-only">Toggle email notifications</span>
                                 <span
-                                    className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${
-                                        emailNotifications ? 'translate-x-[22px]' : 'translate-x-0.5'
+                                    aria-hidden="true"
+                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                        emailNotifications ? 'translate-x-5' : 'translate-x-0'
                                     }`}
                                 />
                             </button>
                         </div>
 
-                        <div className="flex items-center justify-between gap-4">
-                            <div>
+                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/[0.04]">
+                            <div className="pr-2">
                                 <p className="text-xs font-semibold text-white">Asset Drops & Creator Intel</p>
-                                <p className="text-[11px] text-neutral-400">
+                                <p className="text-[11px] text-neutral-400 mt-0.5">
                                     Weekly breakdowns of trending audio, viral formats, and automation releases
                                 </p>
                             </div>
                             <button
+                                type="button"
+                                role="switch"
+                                aria-checked={marketingEmails}
                                 onClick={handleToggleMarketing}
-                                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-                                    marketingEmails ? 'bg-primary-600' : 'bg-white/[0.1]'
+                                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500/50 ${
+                                    marketingEmails ? 'bg-primary-600 shadow-sm shadow-primary-500/40' : 'bg-neutral-800'
                                 }`}
                             >
+                                <span className="sr-only">Toggle marketing telemetry updates</span>
                                 <span
-                                    className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${
-                                        marketingEmails ? 'translate-x-[22px]' : 'translate-x-0.5'
+                                    aria-hidden="true"
+                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                                        marketingEmails ? 'translate-x-5' : 'translate-x-0'
                                     }`}
                                 />
                             </button>
@@ -131,14 +141,15 @@ export default function SettingsPage() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>
                                 <p className="text-xs font-semibold text-white">Account Password</p>
-                                <p className="text-[11px] text-neutral-400">
+                                <p className="text-[11px] text-neutral-400 mt-0.5">
                                     Send a secure one-click password reset magic link to your registered email
                                 </p>
                             </div>
                             <button
+                                type="button"
                                 onClick={handlePasswordReset}
                                 disabled={sendingReset}
-                                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono text-neutral-200 transition-colors cursor-pointer flex items-center gap-2 shrink-0 disabled:opacity-50"
+                                className="px-4 py-2.5 rounded-xl bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 text-xs font-mono text-primary-300 hover:text-white transition-all cursor-pointer flex items-center gap-2 shrink-0 disabled:opacity-50 shadow-sm"
                             >
                                 {sendingReset ? (
                                     <>
@@ -157,7 +168,7 @@ export default function SettingsPage() {
                         <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/[0.04]">
                             <div>
                                 <p className="text-xs font-semibold text-white">Supabase Auth Session</p>
-                                <p className="text-[11px] text-neutral-400 font-mono">
+                                <p className="text-[11px] text-neutral-400 font-mono mt-0.5">
                                     {user?.email}
                                 </p>
                             </div>
@@ -174,13 +185,14 @@ export default function SettingsPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <p className="text-xs font-semibold text-white">Terminate Active Session</p>
-                            <p className="text-[11px] text-neutral-400">
+                            <p className="text-[11px] text-neutral-400 mt-0.5">
                                 Log out of this device. Your downloaded assets and active retainers remain intact.
                             </p>
                         </div>
                         <button
+                            type="button"
                             onClick={signOut}
-                            className="px-4 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs font-mono transition-colors flex items-center gap-2 shrink-0 cursor-pointer"
+                            className="px-5 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 text-xs font-mono transition-all flex items-center gap-2 shrink-0 cursor-pointer shadow-sm shadow-red-950/30"
                         >
                             <LogOut className="w-3.5 h-3.5" />
                             <span>Sign Out</span>

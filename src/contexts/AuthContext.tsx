@@ -50,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [supabase.auth]);
 
     const signUp = async (email: string, password: string, fullName: string) => {
+        const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 data: {
                     full_name: fullName,
                 },
+                emailRedirectTo: `${origin}/api/auth/callback?next=/dashboard`,
             },
         });
         return { error };
@@ -80,18 +82,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const signInWithGoogle = async () => {
+        const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/api/auth/callback`,
+                redirectTo: `${origin}/api/auth/callback`,
             },
         });
         return { error };
     };
 
     const resetPassword = async (email: string) => {
+        const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000');
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+            redirectTo: `${origin}/reset-password`,
         });
         return { error };
     };

@@ -92,8 +92,8 @@
 }
 
 .dark {
-  /* === Ultra Premium Dark (OLED Canvas #030407) === */
-  --background:         230 40% 2.2%;
+  /* === Ultra Premium Living Dark Canvas (Rich Midnight Velvet #05060B) === */
+  --background:         232 38% 3.2%;
   --foreground:         220 20% 96%;
   --card:               230 20% 4.8%;
   --card-foreground:    220 20% 96%;
@@ -712,3 +712,112 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Star fill with rose-gold */
 .fill-rose-gold { fill: hsl(var(--rose-accent)); }
+
+/* =============================================
+   Living Aurora & Dynamic Cosmic Background Keyframes
+   ============================================= */
+@keyframes aurora-float-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate3d(-70px, 45px, 0) scale(1.15);
+    opacity: 1;
+  }
+  66% {
+    transform: translate3d(50px, -35px, 0) scale(0.92);
+    opacity: 0.75;
+  }
+}
+
+@keyframes aurora-float-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate3d(80px, -60px, 0) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes aurora-float-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.65;
+  }
+  40% {
+    transform: translate3d(-50px, -45px, 0) scale(1.1);
+    opacity: 0.9;
+  }
+  80% {
+    transform: translate3d(60px, 35px, 0) scale(1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes aurora-float-4 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(-60px, 70px, 0) scale(1.18);
+    opacity: 0.85;
+  }
+}
+
+@keyframes cyber-beam-sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(180vh);
+    opacity: 0;
+  }
+}
+
+@keyframes stardust-twinkle {
+  0%, 100% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-24px) scale(1.2);
+    opacity: 0.85;
+  }
+}
+
+.animate-aurora-1 {
+  animation: aurora-float-1 18s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.animate-aurora-2 {
+  animation: aurora-float-2 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.animate-aurora-3 {
+  animation: aurora-float-3 26s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.animate-aurora-4 {
+  animation: aurora-float-4 20s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.animate-cyber-beam {
+  animation: cyber-beam-sweep 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+.animate-stardust {
+  animation: stardust-twinkle var(--duration, 6s) ease-in-out infinite var(--delay, 0s);
+  will-change: transform, opacity;
+}
+

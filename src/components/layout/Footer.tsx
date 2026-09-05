@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   Instagram,
@@ -76,7 +77,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#030407] border-t border-white/[0.08] text-white overflow-hidden">
+    <footer className="relative bg-[#080914]/80 backdrop-blur-xl border-t border-white/[0.08] text-white overflow-hidden">
       {/* Subtle radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-40 bg-primary-600/10 blur-[120px] pointer-events-none" />
 
@@ -150,14 +151,20 @@ export function Footer() {
         <div className="py-14 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-8 md:gap-10">
           {/* Brand Info (Col 4) */}
           <div className="col-span-2 md:col-span-4 lg:col-span-4 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center shadow-lg shadow-primary-950/50">
-                <Zap className="w-4.5 h-4.5 text-white" strokeWidth={2.5} />
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/15 bg-black/60 shadow-lg shadow-primary-950/40 flex items-center justify-center shrink-0">
+                <Image
+                  src="/images/novamint-logo.jpg"
+                  alt="NovaMint Networks Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex items-baseline tracking-tight">
                 <span className="font-display font-bold text-xl text-white">Nova</span>
                 <span className="font-display font-bold text-xl text-primary-400">Mint</span>
-                <span className="ml-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-500">
+                <span className="ml-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-400 border border-white/[0.08] px-1.5 py-0.5 rounded-md bg-white/[0.03]">
                   NETWORKS
                 </span>
               </div>

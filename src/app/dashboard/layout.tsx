@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -45,7 +46,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     };
 
     return (
-        <div className="min-h-screen bg-[#030407] text-white">
+        <div className="min-h-screen bg-transparent text-white">
             {/* Top Bar for Mobile & Desktop Context */}
             <div className="border-b border-white/[0.06] bg-[#08090C]/80 backdrop-blur-xl sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -89,13 +90,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     <aside className="lg:col-span-3">
                         <div className="rounded-2xl border border-white/[0.08] bg-[#08090C]/80 backdrop-blur-xl p-4 sticky top-24 space-y-6">
                             {/* Portal Branding */}
-                            <div className="px-3 pt-2">
-                                <div className="flex items-center gap-2 text-xs font-mono text-neutral-400 uppercase tracking-wider mb-1">
-                                    <Shield className="w-3.5 h-3.5 text-primary-400" />
-                                    <span>NovaMint Workspace</span>
+                            <div className="px-3 pt-2 flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/15 bg-black/60 shadow-md shadow-primary-950/40 shrink-0">
+                                    <Image
+                                        src="/images/novamint-logo.jpg"
+                                        alt="NovaMint Networks"
+                                        width={36}
+                                        height={36}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
-                                <div className="text-sm font-bold font-display text-white">
-                                    Automation Hub
+                                <div>
+                                    <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">
+                                        Client Workspace
+                                    </div>
+                                    <div className="text-sm font-bold font-display text-white">
+                                        NovaMint Hub
+                                    </div>
                                 </div>
                             </div>
 

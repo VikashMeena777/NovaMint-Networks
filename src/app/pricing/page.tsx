@@ -46,7 +46,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030407] text-white selection:bg-primary-500/30">
+    <div className="min-h-screen bg-transparent text-white selection:bg-primary-500/30">
       {/* Hero Header */}
       <section className="relative pt-24 pb-14 md:pt-32 md:pb-20 overflow-hidden border-b border-white/[0.06]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-64 bg-primary-600/10 blur-[130px] pointer-events-none" />

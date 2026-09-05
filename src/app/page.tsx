@@ -88,7 +88,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#030407] text-white selection:bg-primary-500/30 selection:text-white">
+    <div className="relative overflow-hidden bg-transparent text-white selection:bg-primary-500/30 selection:text-white">
       {/* Ambient background glows */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-primary-600/15 via-accent/5 to-transparent blur-[140px]" />
       <div className="pointer-events-none absolute top-[30%] -left-64 w-96 h-96 bg-primary-600/10 blur-[120px]" />
