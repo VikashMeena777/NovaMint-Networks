@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { BookNowModal } from '@/components/booking/BookNowModal';
+import { RoiCalculator } from '@/components/interactive/RoiCalculator';
 import { useCart } from '@/contexts/CartContext';
 import { oneTimeAutomations, subscriptionAutomations } from '@/data/automations';
 import type { OneTimeAutomation, SubscriptionAutomation } from '@/data/automations';
@@ -333,6 +334,13 @@ export default function AIAutomationsPage() {
           </div>
         )}
       </div>
+
+      {/* Interactive ROI Calculator Section */}
+      <section className="py-20 border-t border-white/[0.08] bg-[#08090C]/60 relative mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <RoiCalculator />
+        </div>
+      </section>
 
       <BookNowModal
         isOpen={isModalOpen}

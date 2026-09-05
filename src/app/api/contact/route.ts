@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { sendContactNotification } from '@/lib/resend';
+import { checkRateLimit } from '@/lib/ratelimit';
 
 // POST /api/contact - Submit contact form
 export async function POST(request: Request) {
     try {
+        const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+        const rateLimitResult = await checkRateLimit(`contact:${ip}`, 5, 300);
+        if (!rateLimitResult.success) {
+            return NextResponse.json(
+                { error: 'Too many messages submitted. Please wait a few minutes before trying again.' },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json();
         const { name, email, phone, subject, message } = body;
 

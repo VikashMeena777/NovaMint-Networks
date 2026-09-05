@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Package, Loader2, CheckCircle, Clock, XCircle,
     ChevronDown, ChevronUp, Download, ShoppingBag, ExternalLink,
-    Copy, Check
+    Copy, Check, FileText, Printer
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -228,7 +228,22 @@ export default function OrdersPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between sm:justify-end gap-5">
+                                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                                        {order.status === 'paid' && (
+                                            <a
+                                                href={`/api/orders/invoice?order_id=${order.id}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold font-mono transition-all shadow-sm group"
+                                                title="Open Official Indian GST Tax Invoice (Print / Save as PDF)"
+                                            >
+                                                <FileText className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                                                <span className="hidden sm:inline">GST Tax Invoice</span>
+                                                <span className="sm:hidden">Invoice</span>
+                                            </a>
+                                        )}
+
                                         <div className="text-right">
                                             <div className="text-base font-bold font-mono text-white">
                                                 ₹{order.total}
@@ -255,6 +270,36 @@ export default function OrdersPage() {
                                             transition={{ duration: 0.2 }}
                                             className="border-t border-white/[0.06] bg-black/40 px-5 py-6 sm:px-6 space-y-6"
                                         >
+                                            {order.status === 'paid' && (
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/20">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                                                            <FileText className="w-4 h-4" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs font-semibold text-white flex items-center gap-2">
+                                                                <span>Official GST Tax Invoice Generated</span>
+                                                                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-mono">
+                                                                    SAC 998313
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-[11px] font-mono text-neutral-400">
+                                                                CGST (9%) + SGST (9%) Breakdown · Digital Stamp Authenticated
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a
+                                                        href={`/api/orders/invoice?order_id=${order.id}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-bold transition-all shadow shrink-0"
+                                                    >
+                                                        <Printer className="w-3.5 h-3.5" />
+                                                        <span>Print / PDF Invoice</span>
+                                                    </a>
+                                                </div>
+                                            )}
+
                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
                                                 <div>
                                                     <div className="text-neutral-500 mb-1">GATEWAY ID</div>

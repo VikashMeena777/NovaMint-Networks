@@ -193,3 +193,76 @@ export function subscriptionExpiryReminderHtml(
     </div>
     `;
 }
+
+// ── Abandoned Cart Recovery (sent to prospective buyer) ──
+export function abandonedCartRecoveryHtml(
+    customerName: string,
+    orderId: string,
+    total: number,
+    items: OrderEmailItem[],
+    recoveryUrl: string
+): string {
+    const itemRows = items.map((item) => `
+      <tr>
+        <td style="padding: 10px 0; border-bottom: 1px solid #2a2a4a; color: #f3f4f6;">
+          <strong>${item.name}</strong>
+          <span style="color: #9ca3af; font-size: 12px;"> × ${item.quantity}</span>
+        </td>
+        <td style="padding: 10px 0; text-align: right; border-bottom: 1px solid #2a2a4a; color: #10b981; font-weight: 600;">
+          ₹${item.price * item.quantity}
+        </td>
+      </tr>
+    `).join('');
+
+    return `
+    <div style="${baseStyle}">
+      <div style="${cardStyle}">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #8b5cf6; margin: 0; font-size: 24px;">⚡ Did You Leave Your Growth Assets Behind?</h1>
+          <p style="color: #9ca3af; margin-top: 6px; font-size: 13px;">Order #${orderId.slice(0, 8)} is held in reserve for you</p>
+        </div>
+
+        <p style="color: #d1d5db;">Hi <strong>${customerName || 'there'}</strong>,</p>
+        <p style="color: #9ca3af; line-height: 1.6;">
+          We noticed you started setting up your order for NovaMint digital assets but didn't finish checkout. 
+          Your chosen assets are ready to accelerate your viral content and autonomous pipeline:
+        </p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 8px 0; border-bottom: 2px solid #8b5cf6; color: #a78bfa; font-size: 12px; text-transform: uppercase;">Reserved Item</th>
+              <th style="text-align: right; padding: 8px 0; border-bottom: 2px solid #8b5cf6; color: #a78bfa; font-size: 12px; text-transform: uppercase;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemRows}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="padding: 16px 0 0; font-weight: 700; color: #f3f4f6; font-size: 15px;">Reserved Total</td>
+              <td style="padding: 16px 0 0; text-align: right; font-weight: 700; color: #10b981; font-size: 17px;">₹${total}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 14px; margin: 20px 0; text-align: center;">
+          <span style="color: #c4b5fd; font-size: 13px; font-weight: 600;">
+            🎁 Instant Access Reserved · 100% Secure Instant UPI Checkout
+          </span>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px;">
+          <a href="${recoveryUrl}" style="${buttonStyle}; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);">
+            Complete Order & Unlock Assets →
+          </a>
+        </div>
+
+        <p style="color: #6b7280; font-size: 11px; margin-top: 24px; text-align: center; line-height: 1.5;">
+          Have questions or need help with custom automation integrations? Reply directly to this email or reach us at support@novamintnetworks.in
+        </p>
+      </div>
+    </div>
+    `;
+}
+

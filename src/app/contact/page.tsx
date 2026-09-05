@@ -17,9 +17,11 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { AiBriefGenerator } from '@/components/interactive/AiBriefGenerator';
 import { toast } from 'sonner';
 
 export default function ContactPage() {
+  const [contactMode, setContactMode] = useState<'brief' | 'direct'>('brief');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -97,14 +99,47 @@ export default function ContactPage() {
           </h1>
 
           <p className="mt-4 text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-            Have a channel you want to scale, or need a custom multi-agent automation workflow? Send us your brief below.
+            Have a channel you want to scale, or need a custom multi-agent automation workflow? Formulate your brief below.
           </p>
+
+          {/* Mode Switcher */}
+          <div className="mt-8 inline-flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/[0.08] gap-1">
+            <button
+              type="button"
+              onClick={() => setContactMode('brief')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                contactMode === 'brief'
+                  ? 'bg-gradient-to-r from-primary-600 to-accent text-white shadow-md'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Interactive AI Brief Generator</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setContactMode('direct')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                contactMode === 'direct'
+                  ? 'bg-gradient-to-r from-primary-600 to-accent text-white shadow-md'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Direct Studio Message</span>
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Main Grid: Form + Studio Details */}
+      {/* Main Content Area: AI Brief Generator OR Direct Message */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {contactMode === 'brief' ? (
+          <div className="max-w-4xl mx-auto">
+            <AiBriefGenerator />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Form Area (Col 7) */}
           <div className="lg:col-span-7">
             <SpotlightCard className="p-6 sm:p-10 bg-[#08090C]/90 border-white/[0.08]">
@@ -323,6 +358,7 @@ export default function ContactPage() {
             </SpotlightCard>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import { DynamicBackground } from "@/components/animations";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { LiveSocialProof } from "@/components/ui/LiveSocialProof";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -68,7 +70,7 @@ export const metadata: Metadata = {
       "Premium AI Automation, Video Editing, and Content Creation Services. Transform your content empire with battle-tested automation systems.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/api/og",
         width: 1200,
         height: 630,
         alt: "NovaMint Networks",
@@ -80,7 +82,7 @@ export const metadata: Metadata = {
     title: "NovaMint Networks | AI Automation & Content Creation Agency",
     description:
       "Premium AI Automation, Video Editing, and Content Creation Services.",
-    images: ["/og-image.png"],
+    images: ["/api/og"],
     creator: "@novamintnet",
   },
   robots: {
@@ -114,13 +116,15 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
-            {/* Lightweight static background */}
+            <JsonLd />
+            {/* Lightweight dynamic aurora background */}
             <DynamicBackground />
 
             <Header />
             <main className="min-h-screen pt-16 md:pt-20">{children}</main>
             <Footer />
             <CartDrawer />
+            <LiveSocialProof />
             <Toaster theme="dark" position="top-right" richColors />
           </CartProvider>
         </AuthProvider>

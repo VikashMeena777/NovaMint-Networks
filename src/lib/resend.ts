@@ -4,6 +4,7 @@ import {
     bookingNotificationHtml,
     contactNotificationHtml,
     subscriptionExpiryReminderHtml,
+    abandonedCartRecoveryHtml,
 } from './email-templates';
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -110,3 +111,29 @@ export async function sendSubscriptionExpiryReminder(
         return { success: false, error: err };
     }
 }
+
+// Send abandoned checkout recovery email
+export async function sendAbandonedCartRecoveryEmail(
+    customerEmail: string,
+    customerName: string,
+    orderId: string,
+    total: number,
+    items: OrderEmailItem[],
+    recoveryUrl: string
+) {
+    try {
+        const { data, error } = await resend.emails.send({
+            from: `NovaMint Networks <${fromEmail}>`,
+            to: customerEmail,
+            subject: `⚡ Your NovaMint assets are held in reserve — #${orderId.slice(0, 8)}`,
+            html: abandonedCartRecoveryHtml(customerName, orderId, total, items, recoveryUrl),
+        });
+
+        if (error) console.error('Resend abandoned cart recovery email error:', error);
+        return { success: !error, data, error };
+    } catch (err) {
+        console.error('Resend abandoned cart error:', err);
+        return { success: false, error: err };
+    }
+}
+

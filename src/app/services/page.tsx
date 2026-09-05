@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Calendar, Sparkles, Video, Bot, Globe, TrendingUp, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { BookNowModal } from '@/components/booking/BookNowModal';
+import { RoiCalculator } from '@/components/interactive/RoiCalculator';
 import { services } from '@/data/services';
 import { getIcon } from '@/lib/icon-map';
 
@@ -157,6 +158,13 @@ export default function ServicesPage() {
           </div>
         ))}
       </div>
+
+      {/* Interactive ROI Calculator Section */}
+      <section className="py-20 border-t border-white/[0.08] bg-[#08090C]/60 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <RoiCalculator />
+        </div>
+      </section>
 
       {/* Custom Scopes Banner */}
       <section className="py-20 border-t border-white/[0.08] bg-[#06070a]">

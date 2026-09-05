@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { createCashfreeOrder } from '@/lib/cashfree';
+import { checkRateLimit } from '@/lib/ratelimit';
 
 // POST /api/checkout - Create Cashfree order + DB order
 export async function POST(request: Request) {
     try {
+        const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+        const rateLimitResult = await checkRateLimit(`checkout:${ip}`, 12, 60);
+        if (!rateLimitResult.success) {
+            return NextResponse.json(
+                { error: 'Too many checkout requests. Please wait a moment before trying again.' },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json();
         const { items, billing_name, billing_email, billing_phone } = body;
 

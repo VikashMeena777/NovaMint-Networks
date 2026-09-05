@@ -58,13 +58,16 @@ export function verifyCashfreeWebhook(
     timestamp: string,
     signature: string
 ): boolean {
-    const secretKey = process.env.CASHFREE_WEBHOOK_SECRET || process.env.CASHFREE_SECRET_KEY!;
+    const secretKey = process.env.CASHFREE_WEBHOOK_SECRET || process.env.CASHFREE_SECRET_KEY;
+    if (!process.env.CASHFREE_WEBHOOK_SECRET && process.env.CASHFREE_SECRET_KEY) {
+        console.warn('WARNING: CASHFREE_WEBHOOK_SECRET is not set, falling back to CASHFREE_SECRET_KEY');
+    }
     if (!secretKey) {
         console.error('CRITICAL: No webhook secret configured — rejecting webhook');
         return false;
     }
-    if (!signature) {
-        console.error('CRITICAL: No signature header — possible forged request');
+    if (!signature || !timestamp) {
+        console.error('CRITICAL: Missing signature or timestamp header — rejecting webhook');
         return false;
     }
     const body = timestamp + rawBody;

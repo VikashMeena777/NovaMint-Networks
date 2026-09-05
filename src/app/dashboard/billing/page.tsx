@@ -270,14 +270,17 @@ export default function BillingPage() {
                                     </div>
 
                                     {order.status === 'paid' ? (
-                                        <button
-                                            onClick={() => handlePrintInvoice(order)}
+                                        <a
+                                            href={`/api/orders/invoice?order_id=${order.id}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             className="p-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-neutral-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-mono"
-                                            title="Print Tax Invoice"
+                                            title="Open Official GST Tax Invoice"
                                         >
-                                            <Printer className="w-3.5 h-3.5" />
-                                            <span className="hidden sm:inline">INVOICE</span>
-                                        </button>
+                                            <Printer className="w-3.5 h-3.5 text-emerald-400" />
+                                            <span className="hidden sm:inline">GST INVOICE</span>
+                                            <span className="sm:hidden">INV</span>
+                                        </a>
                                     ) : (
                                         <div className="w-10 text-center text-xs font-mono text-neutral-600">—</div>
                                     )}

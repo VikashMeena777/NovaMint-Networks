@@ -15,7 +15,8 @@ import {
     ArrowLeft,
     ExternalLink,
     Sparkles,
-    Shield
+    Shield,
+    Flame
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ interface DashboardLayoutProps {
 
 const navItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Retainer Sprints', href: '/dashboard/sprints', icon: Flame },
     { name: 'My Orders & Downloads', href: '/dashboard/orders', icon: Package },
     { name: 'Billing & Invoices', href: '/dashboard/billing', icon: CreditCard },
     { name: 'Profile', href: '/dashboard/profile', icon: User },
